@@ -4,5 +4,5 @@ Members:
 Samarth
 Patrick
 Josh
-Burhan
+Burhanuddin
 Saransh
