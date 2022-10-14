@@ -83,6 +83,8 @@ def signup(username, password, confirm_password):
 
 def login(username, password):
     returnArr = []
+    database = open("Database", "a") #creates db if not there
+    database.close()
     database = open("Database", "r")  # open and read the database text file
     # if the number of chartecters entered for username or password is not less then 1 then
     if not len(password or username) < 1:
@@ -139,6 +141,8 @@ def login(username, password):
 
 
 def delete(username, password):
+    database = open("Database", "a")
+    database.close()
     database = open("Database", "r")  # open and read the database text file
     # create a variable line and set it to read the lines in the database text file
     confirm = ""
