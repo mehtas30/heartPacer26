@@ -4,7 +4,7 @@ def counter():
     # create a variable line and set it to read the lines in the database text file
     line = database.readlines()
     for i in range(len(line)):  # for loop for the length of line
-        if line == "":  # if line is equal to an empty string
+        if line == "".strip():  # if line is equal to an empty string
             break  # break the for loop
         counts += 1  # add 1 to the variable counts
     database.close()  # close the database
@@ -12,6 +12,9 @@ def counter():
 
 
 def signup(username, password, confirm_password):
+    database = open("Database", "a")
+    database.close()
+    # incase database doesnt exist
     database = open("Database", "r")  # open and read the database text file
     count = counter()  # create a variable count and set it equal to counter ()
     if count == 10:  # if the count is equal to 10
@@ -65,6 +68,12 @@ def signup(username, password, confirm_password):
                 # write the new username and passwords created
                 database.write(username + ", " + password + "\n")
                 database.close()  # close the database
+                paraDb = open("ParamDb", 'a')
+                paraDb.write("user: "+username+"\n")
+                modes = ['AOO', 'VOO', 'AAI', 'VVI']
+                for mode in modes:
+                    paraDb.write(mode+": "+"\n")
+                paraDb.close()
                 # tell the user that the new account is succesfully created
                 print("Successfully created an account for",
                       username, "please login")
@@ -93,7 +102,7 @@ def login(username, password):
                     # check if the password and the username are correct if they are then
                     if password == data[username]:
                         # let the user know that they've succesfully logged in
-                       # print("Login successful welcome", username)
+                        # print("Login successful welcome", username)
                         returnArr = [2, "Login successful welcome"]
                     else:  # if the password and username is not correct then
                         # let the user know that the password entered or the username is inccorect and tell them to try again

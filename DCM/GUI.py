@@ -1,7 +1,8 @@
-from cgitb import text
+# from cgitb import text
 import tkinter as tk
 from tkinter import messagebox
 from options import *
+from storeAttributes import *
 BGCOLOR = '#800000'
 
 
@@ -11,20 +12,22 @@ class gui (tk.Tk):  # tk.TK is root
     def __init__(self, *args, **kwargs):
         # init for tkinter functionality (superclass)
         tk.Tk.__init__(self, *args, **kwargs)
+        self.sharedUser = {"username": tk.StringVar(),
+                           "mode": tk.StringVar()}
         container = tk.Frame()  # container for frames
         container.pack(side='top', fill='both', expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.pageInfo = {}  # empty dictionary for page name and object
         # signupP, deleteP]  # array of class objects
-        for page in (welcomeP, loginP, signupP, deleteP, afterLogin):
+        for page in (welcomeP, loginP, signupP, deleteP, afterLogin, modeP):
             pageName = page.__name__  # magic  method to get object name -pythons cool
             # parent as container for frame, with self as controller to use function in gui
             frame = page(parent=container, controller=self)
             frame.grid(row=0, column=0, sticky='nesw')
             # pagename dictionary with frame objects
             self.pageInfo[pageName] = frame
-        self.dispFrame('welcomeP')  # show welcome first
+        self.dispFrame('loginP')  # show welcome first
 
     def dispFrame(self, pageName):  # display frame based on name
         page = self.pageInfo[pageName]
@@ -54,6 +57,71 @@ class welcomeP(tk.Frame):  # Frame is parent
         deleteButt.pack(pady=5)
 
 
+class modeP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+
+        def displayParam(userName, mode):
+            readButt.destroy()
+            values = readMethod(userName, mode)
+            if (values == []):
+                messagebox.showinfo(message="Parameters have no value")
+            else:
+                tkValues = []
+                for i in len(values):
+                    tkValues[i] = tk.StringVar()
+                    tkValues[i].set(values[i])
+
+        title = tk.Label(self, textvariable=controller.sharedUser["mode"], fg='#F2BA49', bg=BGCOLOR,
+                         justify='center', font="default, 25")
+        title.grid(row=0, column=1, pady=10, padx=200)
+        welcomeButt = tk.Button(self, text="Back",
+                                width=5, height=2, command=lambda: controller.dispFrame("afterLogin"))
+        welcomeButt.grid(row=0, column=0, pady=5)
+        readButt = tk.Button(self, text="Read Parameters",
+                             width=20, height=2, command=lambda: displayParam(controller.sharedUser["username"].get(), controller.sharedUser["mode"].get()))
+        readButt.grid(row=1, column=1, pady=5)
+
+
+class afterLogin(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+        # Title label
+
+        def modeSelect(mode):
+            if (mode == "AOO"):
+                controller.sharedUser["mode"].set("AOO")
+            elif (mode == "VOO"):
+                controller.sharedUser["mode"].set("VOO")
+            elif (mode == "AAI"):
+                controller.sharedUser["mode"].set("AII")
+            elif (mode == "VVI"):
+                controller.sharedUser["mode"].set("VVI")
+            controller.dispFrame("modeP")
+
+        title = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
+                         justify='center', font="default, 25")
+        title.grid(row=0, column=1, pady=10, padx=200)
+        # back button
+        welcomeButt = tk.Button(self, text="To Main",
+                                width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
+        welcomeButt.grid(row=0, column=0, pady=5)
+        AOO = tk.Button(self, text="AOO", width=5, height=2,
+                        command=lambda: modeSelect("AOO"))
+        AOO.grid(row=1, column=0, pady=5)
+        VOO = tk.Button(self, text="VOO", width=5, height=2,
+                        command=lambda: modeSelect("VOO"))
+        VOO.grid(row=1, column=1, pady=5)
+        AAI = tk.Button(self, text="AAI", width=5, height=2,
+                        command=lambda: modeSelect("AAI"))
+        AAI.grid(row=2, column=0, pady=5)
+        VVI = tk.Button(self, text="VVI", width=5, height=2,
+                        command=lambda: modeSelect("VVI"))
+        VVI.grid(row=2, column=1, pady=5)
+
+
 class loginP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
@@ -64,7 +132,6 @@ class loginP(tk.Frame):
             password.delete(0, tk.END)
 
         def loginPressed(user, password):
-            clearBox()
             loginInfo = login(user, password)
             logCode = loginInfo[0]
             logMsg = loginInfo[1]
@@ -72,9 +139,10 @@ class loginP(tk.Frame):
             if (logCode == 2):
                 controller.dispFrame("afterLogin")
             elif (logCode == 1):
+                clearBox()
                 controller.dispFrame("welcomeP")
             else:
-                pass
+                clearBox()
         # Title label
         title = tk.Label(self, text='Login', fg='#F2BA49', bg=BGCOLOR,
                          justify='center', font="default, 25")
@@ -82,10 +150,10 @@ class loginP(tk.Frame):
         # button for option select on welcome screen
         welcomeButt = tk.Button(self, text="To Main",
                                 width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
-        enterUser = tk.StringVar()
+        #enterUser = tk.StringVar()
         enterPass = tk.StringVar()
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
-                        textvariable=enterUser, width=20)
+                        textvariable=controller.sharedUser["username"], width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                             textvariable=enterPass, width=20)
         userIns = tk.Label(self, text='Username:', fg='#F2BA49', bg=BGCOLOR,
@@ -93,7 +161,8 @@ class loginP(tk.Frame):
         passIns = tk.Label(self, text='Password:', fg='#F2BA49', bg=BGCOLOR,
                            justify='center', font="default, 25")
         submit = tk.Button(self, text="Login",
-                           width=5, height=2, command=lambda: loginPressed(enterUser.get(), enterPass.get()))
+                           width=5, height=2, command=lambda: loginPressed(controller.sharedUser["username"].get(), enterPass.get()))
+        # placement
         welcomeButt.grid(row=0, column=0, pady=5)
         user.grid(row=2, column=1, pady=5)
         password.grid(row=3, column=1, pady=10)
@@ -205,15 +274,7 @@ class deleteP(tk.Frame):
         passIns.grid(row=3, column=0)
         submit.grid(row=5, column=1)
 
-
-class afterLogin(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg=BGCOLOR)
-        self.controller = controller
-        # Title label
-        title = tk.Label(self, text='login success', fg='#F2BA49', bg=BGCOLOR,
-                         justify='center', font="default, 25")
-        title.pack()
+# mode page
 
 
 if __name__ == "__main__":
