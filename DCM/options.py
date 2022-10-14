@@ -47,12 +47,14 @@ def signup(username, password, confirm_password):
                 print("Password to short, please have more than 4 characters")
                 # signup()  # give the user another attempt to signup
                 return 1, "Password to short, please have more than 4 characters"
+            elif username.strip() == "":
+                return 1, "Username cannot be blank"
             elif username in x:  # if the username is already in the array x
                 # tell the user that the username already exists in the database
                 print("Username already exists, please sign in or create a new username")
                 # select()  # give the user another attempt to choose what to do either signup, login or delete
                 return 0, "Username already exists, please sign in or create a new username"
-            elif username == password:  # if the password and username are the same
+            elif username.strip() == password.strip():  # if the password and username are the same
                 # tell the user that the password and username can't be the same
                 print("Password and Username can not be the same")
                 # signup()  # give the user another attempt to signup
