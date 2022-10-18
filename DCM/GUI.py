@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from options import *
 from storeAttributes import *
+from serialCom import *
 BGCOLOR = '#800000'
 
 
@@ -88,7 +89,9 @@ class afterLogin(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        # Title label
+
+        def reDisp():
+            controller.dispFrame('afterLogin')
 
         def modeSelect(mode):
             if (mode == "AOO"):
@@ -101,9 +104,24 @@ class afterLogin(tk.Frame):
                 controller.sharedUser["mode"].set("VVI")
             controller.dispFrame("modeP")
 
-        title = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
-                         justify='center', font="default, 25")
-        title.grid(row=0, column=1, pady=10, padx=200)
+        def refreshConnection():
+            connected = True  # testing purposes
+            connection.set("Connected" if connected else "Disconnected")
+
+        connection = tk.StringVar(
+            self, "Connected" if connected else "Disconnected")
+        showConnection = tk.Label(self, textvariable=connection, fg='Blue', bg=BGCOLOR,
+                                  justify='center', font="default, 25")
+        showConnection.grid(row=0, column=3)
+        refreshButt = tk.Button(self, text="Check Connection", height=2,
+                                command=lambda: refreshConnection())
+        refreshButt.grid(row=1, column=3)
+        user = tk.Label(self, text="User:", fg='#F2BA49', bg=BGCOLOR,
+                        justify='center', font="default, 25")
+        user.grid(row=0, column=2, pady=10, padx=150)
+        username = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
+                            justify='center', font="default, 25")
+        username.grid(row=1, column=2, padx=150)
         # back button
         welcomeButt = tk.Button(self, text="To Main",
                                 width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
