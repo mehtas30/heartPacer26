@@ -90,9 +90,6 @@ class afterLogin(tk.Frame):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
 
-        def reDisp():
-            controller.dispFrame('afterLogin')
-
         def modeSelect(mode):
             if (mode == "AOO"):
                 controller.sharedUser["mode"].set("AOO")
