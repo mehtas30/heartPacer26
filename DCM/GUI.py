@@ -367,7 +367,7 @@ class afterLogin(tk.Frame):  # page after login success
 
         def refreshConnection():  # refresh connection for device connection and id checking- will be improved with serial comms
             connected = True  # testing purposes change to true as simulated connection
-            different = False  # testing purposes change value
+            different = True  # testing purposes change value
             connection.set("Connected" if connected else "Disconnected")
             # will show different device label if different ids- from serialCom.py
             if (different == True and connected == True):
