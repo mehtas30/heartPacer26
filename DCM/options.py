@@ -175,7 +175,7 @@ def delete(username, password):
     else:
         return confirm
 
-
+# Test function
 # def select():
 #     # asks user for what they want to do either login, signup, or delete an account
 #     option = input("Login | Signup | Delete:")
