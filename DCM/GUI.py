@@ -3,6 +3,7 @@ from email.policy import EmailPolicy
 import enum
 import tkinter as tk
 from tkinter import messagebox
+from tkinter.tix import COLUMN
 from options import *
 from storeAttributes import *
 from serialCom import *
@@ -65,14 +66,14 @@ class modeP(tk.Frame):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
 
-        LRLStringVar = tk.StringVar()
-        URLStringVar = tk.StringVar()
-        AampStringVar = tk.StringVar()
-        APWStringVar = tk.StringVar()
-        VampStringVar = tk.StringVar()
-        VPWStringVar = tk.StringVar()
-        ARPStringVar = tk.StringVar()
-        VRPStringVar = tk.StringVar()
+        LRLStringVar = tk.DoubleVar(self, "")
+        URLStringVar = tk.DoubleVar(self, "")
+        AampStringVar = tk.DoubleVar(self, "")
+        APWStringVar = tk.DoubleVar(self, "")
+        VampStringVar = tk.DoubleVar(self, "")
+        VPWStringVar = tk.DoubleVar(self, "")
+        ARPStringVar = tk.DoubleVar(self, "")
+        VRPStringVar = tk.DoubleVar(self, "")
 
         def displayParam(userName, mode):
             readButt.grid_remove()
@@ -82,7 +83,6 @@ class modeP(tk.Frame):
                 if (parameterList == None):
                     parameterlabel.config(text="no parameters")
                 else:
-
                     # get from text file
                     pLabelText = "LRL: " + \
                         str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
@@ -91,6 +91,41 @@ class modeP(tk.Frame):
                     parameterlabel.config(text=pLabelText)
             elif (mode == ""):
                 parameterlabel.config(text="")
+            elif (mode == "VOO"):
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "VVI"):
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])+"\n VRP: " + \
+                        str(parameterList[4])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "AAI"):
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
+                        str(parameterList[2])+"\n APW: " + \
+                        str(parameterList[3])+"\n ARP: " + \
+                        str(parameterList[4])
+                    parameterlabel.config(text=pLabelText)
             else:
                 parameterlabel.config(text="diff mode")
 
@@ -107,17 +142,95 @@ class modeP(tk.Frame):
                 for i in range(4):
                     paramInstructions[i].grid(row=i+1, column=0, pady=5)
                     paramEntries[i].grid(row=i+1, column=1, pady=5)
-            submit.grid(row=5, column=1, pady=5)
+
+            elif (mode == 'VOO'):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+
+            elif (mode == 'AAI'):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[2].config(textvariable=AampStringVar)
+                paramEntries[3].config(textvariable=APWStringVar)
+                paramEntries[7].config(textvariable=ARPStringVar)
+                for i in range(4):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[7].grid(row=5, column=0, pady=5)
+                paramEntries[7].grid(row=5, column=1, pady=5)
+
+            elif (mode == 'VVI'):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                paramEntries[6].config(textvariable=VRPStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+                paramInstructions[6].grid(row=5, column=0, pady=5)
+                paramEntries[6].grid(row=5, column=1, pady=5)
+            submit.grid(row=6, column=1, pady=5)
 
         def verifySubmit(user, mode):
             if (mode == "AOO"):
                 # verify values code
-                paramList = []
-                print(LRLStringVar.get()+" LRL should be 1")
-                paramList.append(LRLStringVar.get())
-                paramList.append(URLStringVar.get())
-                paramList.append(AampStringVar.get())
-                paramList.append(APWStringVar.get())
+                try:
+                    paramList = []
+                    paramList.append(LRLStringVar.get())
+                    paramList.append(URLStringVar.get())
+                    paramList.append(AampStringVar.get())
+                    paramList.append(APWStringVar.get())
+                except:
+                    messagebox.showinfo(message="Inputs must be a number")
+            elif (mode == "VOO"):
+                # verify values code
+                try:
+                    paramList = []
+                    paramList.append(LRLStringVar.get())
+                    paramList.append(URLStringVar.get())
+                    paramList.append(VampStringVar.get())
+                    paramList.append(VPWStringVar.get())
+                except:
+                    messagebox.showinfo(message="Inputs must be a number")
+            elif (mode == "VVI"):
+                # verify values code
+                try:
+                    paramList = []
+                    paramList.append(LRLStringVar.get())
+                    paramList.append(URLStringVar.get())
+                    paramList.append(VampStringVar.get())
+                    paramList.append(VPWStringVar.get())
+                    paramList.append(VRPStringVar.get())
+                except:
+                    messagebox.showinfo(message="Inputs must be a number")
+            elif (mode == "AAI"):
+                # verify values code
+                try:
+                    paramList = []
+                    paramList.append(LRLStringVar.get())
+                    paramList.append(URLStringVar.get())
+                    paramList.append(AampStringVar.get())
+                    paramList.append(APWStringVar.get())
+                    paramList.append(ARPStringVar.get())
+                except:
+                    messagebox.showinfo(message="Inputs must be a number")
+            else:
+                print("something went wrong :(")
+
             setParams(user, paramList, mode)
             LRLStringVar.set("")
             URLStringVar.set("")
@@ -127,7 +240,7 @@ class modeP(tk.Frame):
             VPWStringVar.set("")
             ARPStringVar.set("")
             VRPStringVar.set("")
-            messagebox.showinfo(message="Success")
+            messagebox.showinfo(message="Parameters Set")
 
         def backPressed():
             parameterlabel.config(text="")
@@ -183,14 +296,19 @@ class afterLogin(tk.Frame):
             elif (mode == "VOO"):
                 controller.sharedUser["mode"].set("VOO")
             elif (mode == "AAI"):
-                controller.sharedUser["mode"].set("AII")
+                controller.sharedUser["mode"].set("AAI")
             elif (mode == "VVI"):
                 controller.sharedUser["mode"].set("VVI")
             controller.dispFrame("modeP")
 
         def refreshConnection():
             connected = True  # testing purposes
+            different = False
             connection.set("Connected" if connected else "Disconnected")
+            if (different == True):
+                showDifferent.grid(row=1, column=3)
+            else:
+                showDifferent.grid_forget()
 
         def signOut():
             username.config(
@@ -202,9 +320,15 @@ class afterLogin(tk.Frame):
         showConnection = tk.Label(self, textvariable=connection, fg='Blue', bg=BGCOLOR,
                                   justify='center', font="default, 25")
         showConnection.grid(row=0, column=3)
+
+        showDifferent = tk.Label(self, text="New Pacemaker", fg='Blue', bg=BGCOLOR,
+                                 justify='center', font="default, 25")
+        if (different == True):
+            showDifferent.grid(row=1, column=3)
+
         refreshButt = tk.Button(self, text="Check Connection", height=2,
                                 command=lambda: refreshConnection())
-        refreshButt.grid(row=1, column=3)
+        refreshButt.grid(row=2, column=3)
         user = tk.Label(self, text="User:", fg='#F2BA49', bg=BGCOLOR,
                         justify='center', font="default, 25")
         user.grid(row=0, column=2, pady=10, padx=150)
