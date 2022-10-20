@@ -1,9 +1,12 @@
-# from cgitb import text
+import enum
 import tkinter as tk
 from tkinter import messagebox
+from tkinter.tix import COLUMN
 from options import *
 from storeAttributes import *
-BGCOLOR = '#800000'
+from serialCom import *
+BGCOLOR = '#800000'  # background color of gui-maroon
+# Runs gui and controls program
 
 
 class gui (tk.Tk):  # tk.TK is root
@@ -12,14 +15,16 @@ class gui (tk.Tk):  # tk.TK is root
     def __init__(self, *args, **kwargs):
         # init for tkinter functionality (superclass)
         tk.Tk.__init__(self, *args, **kwargs)
+        # shared parameters that can be used throughout all frames
         self.sharedUser = {"username": tk.StringVar(),
                            "mode": tk.StringVar()}
         container = tk.Frame()  # container for frames
+        # pack means place, expandable window
         container.pack(side='top', fill='both', expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.pageInfo = {}  # empty dictionary for page name and object
-        # signupP, deleteP]  # array of class objects
+        # sets properties of frame windows
         for page in (welcomeP, loginP, signupP, deleteP, afterLogin, modeP):
             pageName = page.__name__  # magic  method to get object name -pythons cool
             # parent as container for frame, with self as controller to use function in gui
@@ -29,29 +34,30 @@ class gui (tk.Tk):  # tk.TK is root
             self.pageInfo[pageName] = frame
         self.dispFrame('loginP')  # show welcome first
 
-    def dispFrame(self, pageName):  # display frame based on name
+    def dispFrame(self, pageName):  # display frame based on name- creates instances
         page = self.pageInfo[pageName]
-        page.tkraise()
+        page.tkraise()  # raises frame over the other frames to be visible
 
 
 class welcomeP(tk.Frame):  # Frame is parent
     def __init__(self, parent, controller):  # init object as specified in gui
         # init frame to get tkinter frame properties
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
-        self.controller = controller
-        self.controller.title('Heart Pacer 26')
+        self.controller = controller  # controller to get access to gui variables/methods
+        self.controller.title('Heart Pacer 26')  # title on top of window
         # welcome label
-        title = tk.Label(self, text='Welcome', fg='#F2BA49', bg=BGCOLOR,
+        title = tk.Label(self, text='Welcome', fg='#F2BA49', bg=BGCOLOR,  # page title- different from window title
                          justify='center', font="default, 25")
         # title.place(x=400, y=100, anchor=CENTER)
-        title.pack(pady=10, padx=300)
-        # button for option select on welcome screen
+        title.pack(pady=10, padx=300)  # place title at coordinates
+        # buttons for option select on welcome screen
         loginButt = tk.Button(self, text="Login",
-                              width=20, height=2, command=lambda: controller.dispFrame("loginP"))
+                              width=20, height=2, command=lambda: controller.dispFrame("loginP"))  # lamda is needed for controller arguments- calls next frame
         signButt = tk.Button(self, text="Signup",
                              width=20, height=2, command=lambda: controller.dispFrame("signupP"))
         deleteButt = tk.Button(
             self, text="Delete", width=20, height=2, command=lambda: controller.dispFrame("deleteP"))
+        # placement of buttons underneath each other
         loginButt.pack(pady=5)
         signButt.pack(pady=5)
         deleteButt.pack(pady=5)
@@ -61,55 +67,346 @@ class modeP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
+        # DoubleVar is needed for tk labels/entries to be able to take in variable as args and too pass to other frames
+        LRLStringVar = tk.DoubleVar(self, "")
+        URLStringVar = tk.DoubleVar(self, "")
+        AampStringVar = tk.DoubleVar(self, "")
+        APWStringVar = tk.DoubleVar(self, "")
+        VampStringVar = tk.DoubleVar(self, "")
+        VPWStringVar = tk.DoubleVar(self, "")
+        ARPStringVar = tk.DoubleVar(self, "")
+        VRPStringVar = tk.DoubleVar(self, "")
+        # to be set/displayed
 
+        # displaying parameters by getting them from SQL db user/mode needed for qry
         def displayParam(userName, mode):
-            readButt.destroy()
-            values = readMethod(userName, mode)
-            if (values == []):
-                messagebox.showinfo(message="Parameters have no value")
+            # removes buttons to make room to display label without making a new frame
+            readButt.grid_remove()
+            setButt.grid_remove()
+            if (mode == "AOO"):  # parameters get displayed based on mode
+                # database function to get list of parameters
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):  # empty list case
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # Changes the text of the label from blank to display parameters
+                    # Will already be in order from sql query
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
+                        str(parameterList[2])+"\n APW: " + \
+                        str(parameterList[3])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == ""):  # empty mode will change the label to be empty
+                parameterlabel.config(text="")
+            elif (mode == "VOO"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "VVI"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])+"\n VRP: " + \
+                        str(parameterList[4])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "AAI"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
+                        str(parameterList[2])+"\n APW: " + \
+                        str(parameterList[3])+"\n ARP: " + \
+                        str(parameterList[4])
+                    parameterlabel.config(text=pLabelText)
+            else:  # incase something goes wrong and for testing
+                parameterlabel.config(text="diff mode")
+            # places the label to be viewed
+            parameterlabel.grid(row=2, column=1)
+
+        def setParam(mode):  # sets the parameters with option given to user based on mode selected (ONLY FOR DISPLAY SUBMIT IS BELOW)
+            readButt.grid_remove()  # removes button to make room for entry boxes
+            setButt.grid_remove()
+            if (mode == 'AOO'):  # Aoo mode will only give option to change aoo related parameters
+                # changes entry variable to specific parameter variable
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[2].config(textvariable=AampStringVar)
+                paramEntries[3].config(textvariable=APWStringVar)
+                for i in range(4):  # places the instruction lables and entries
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+
+            elif (mode == 'VOO'):  # same as AOO
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+
+            elif (mode == 'AAI'):  # same as AOO
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[2].config(textvariable=AampStringVar)
+                paramEntries[3].config(textvariable=APWStringVar)
+                paramEntries[7].config(textvariable=ARPStringVar)
+                for i in range(4):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[7].grid(row=5, column=0, pady=5)
+                paramEntries[7].grid(row=5, column=1, pady=5)
+
+            elif (mode == 'VVI'):  # same as AOO
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                paramEntries[6].config(textvariable=VRPStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+                paramInstructions[6].grid(row=5, column=0, pady=5)
+                paramEntries[6].grid(row=5, column=1, pady=5)
+            # places submit button below all the other labels
+            submit.grid(row=6, column=1, pady=5)
+
+        def verifySubmit(user, mode):  # verifies and writes to database using sql
+            checked = False  # variable for verification pass/fail
+            errorMsg = ""  # error message empty string
+            # all variables must get passed each condition for checked to return True or error message will show
+            if (LRLStringVar.get() >= 30 and LRLStringVar.get() <= 175):
+                if (URLStringVar.get() >= 50 and URLStringVar.get() <= 175):
+                    if (mode == 'AOO'):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.5 and AampStringVar.get() <= 3.2)):
+                            if (APWStringVar.get() == 0.05 or (APWStringVar.get() >= 0.1 and APWStringVar.get() <= 1.9)):
+                                checked = True
+                            else:
+                                errorMsg = "APW has to be 0.05 or between 0.1 and 1.9"
+                        else:
+                            errorMsg = "A amplitude has to be 0 or between 0.5 and 3.2"
+                    elif (mode == 'VOO'):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.5 and VampStringVar.get() <= 3.2)):
+                            if (VPWStringVar.get() == 0.05 or (VPWStringVar.get() >= 0.1 and VPWStringVar.get() <= 1.9)):
+                                checked = True
+                            else:
+                                errorMsg = "VPW has to be 0.05 or between 0.1 and 1.9"
+                        else:
+                            errorMsg = "V amplitude has to be 0 or between 0.5 and 3.2"
+                    elif (mode == 'AAI'):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.5 and AampStringVar.get() <= 3.2)):
+                            if (APWStringVar.get() == 0.05 or (APWStringVar.get() >= 0.1 and APWStringVar.get() <= 1.9)):
+                                if (ARPStringVar.get() >= 150 and ARPStringVar.get() <= 500):
+                                    checked = True
+                                else:
+                                    errorMsg = "ARP has to be between 150 and 500"
+                            else:
+                                errorMsg = "APW has to be 0.05 or between 0.1 and 1.9"
+                        else:
+                            errorMsg = "A amplitude has to be 0 or between 0.5 and 3.2"
+                    elif (mode == 'VVI'):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.5 and VampStringVar.get() <= 3.2)):
+                            if (VPWStringVar.get() == 0.05 or (VPWStringVar.get() >= 0.1 and VPWStringVar.get() <= 1.9)):
+                                if (VRPStringVar.get() >= 150 and VRPStringVar.get() <= 500):
+                                    checked = True
+                                else:
+                                    errorMsg = "VRP has to be between 150 and 500"
+                            else:
+                                errorMsg = "VPW has to be 0.05 or between 0.1 and 1.9"
+                        else:
+                            errorMsg = "V amplitude has to be 0 or between 0.5 and 3.2"
+                else:
+                    errorMsg = "URL has to be between 50 and 175"
             else:
-                tkValues = []
-                for i in len(values):
-                    tkValues[i] = tk.StringVar()
-                    tkValues[i].set(values[i])
+                errorMsg = "LRL has to be between 30 and 175"
+            if (checked == True):
+                if (mode == "AOO"):
+                    # verify values code
+                    try:
+                        paramList = []
+                    # appending value to parameter list
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(AampStringVar.get())
+                        paramList.append(APWStringVar.get())
+                    except:  # if input is not a number- will output message to user and not submit
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "VOO"):  # same as AOO
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(VampStringVar.get())
+                        paramList.append(VPWStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "VVI"):
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(VampStringVar.get())
+                        paramList.append(VPWStringVar.get())
+                        paramList.append(VRPStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "AAI"):
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(AampStringVar.get())
+                        paramList.append(APWStringVar.get())
+                        paramList.append(ARPStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                else:  # if mode is not one of the 4 something went wrong in logic
+                    print("something went wrong :(")
+                # sets parameters to SQL database
+                setParams(user, paramList, mode)
+                # resets entry boxes
+                LRLStringVar.set("")
+                URLStringVar.set("")
+                AampStringVar.set("")
+                APWStringVar.set("")
+                VampStringVar.set("")
+                VPWStringVar.set("")
+                ARPStringVar.set("")
+                VRPStringVar.set("")
+                # outputs to user success
+                messagebox.showinfo(message="Parameters Set")
+            else:
+                messagebox.showinfo(message=errorMsg)
+
+        def backPressed():  # back button pressed forget unneeded labels and regrid the read and set buttons
+            parameterlabel.config(text="")
+            parameterlabel.grid_forget()
+            readButt.grid(row=1, column=1, pady=5)
+            setButt.grid(row=2, column=1, pady=5)
+            submit.grid_forget()
+            # enumerate to get index of string list to forget them
+            for i, p in enumerate(paramArr):
+                paramEntries[i].config(textvariable=emptyStringVar)
+                paramInstructions[i].grid_forget()
+                paramEntries[i].grid_forget()
+
+            controller.dispFrame("afterLogin")  # change page
+
+        # widgets
+        parameterlabel = tk.Label(self, text="", fg='#F2BA49', bg=BGCOLOR,
+                                  justify='center', font="default, 25")  # Label for displaying parameters in read
+
+        paramArr = ['LRL', 'URL', 'Aamp', 'APW', 'VAMP',
+                    'VPW', 'VRP', 'ARP']  # array of parameters
+        paramEntries = []  # entry box array for parameter
+        paramInstructions = []  # entry box instructions for parameters
+        emptyStringVar = tk.StringVar(self, "")  # empty StringVar
+        submit = tk.Button(self, text="Submit",  # submit button calls verifySubmit when clicked
+                           width=20, height=2, command=lambda: verifySubmit(controller.sharedUser["username"].get(), controller.sharedUser["mode"].get()))
+        # assigning list for entry and instructions to appropriate parameter
+        for index, param in enumerate(paramArr):
+            paramInstructions.append(tk.Label(self, text=paramArr[index], fg='#F2BA49', bg=BGCOLOR,
+                                              justify='center', font="default, 25"))
+            paramEntries.append(tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
+                                         textvariable=emptyStringVar, width=20))
 
         title = tk.Label(self, textvariable=controller.sharedUser["mode"], fg='#F2BA49', bg=BGCOLOR,
-                         justify='center', font="default, 25")
+                         justify='center', font="default, 25")  # Mode title
         title.grid(row=0, column=1, pady=10, padx=200)
-        welcomeButt = tk.Button(self, text="Back",
-                                width=5, height=2, command=lambda: controller.dispFrame("afterLogin"))
-        welcomeButt.grid(row=0, column=0, pady=5)
+        backButt = tk.Button(self, text="Back",
+                             width=5, height=2, command=lambda: backPressed())
+        backButt.grid(row=0, column=0, pady=5)  # back button calls backPressed
         readButt = tk.Button(self, text="Read Parameters",
                              width=20, height=2, command=lambda: displayParam(controller.sharedUser["username"].get(), controller.sharedUser["mode"].get()))
+        # read parameter button calls displayParam
         readButt.grid(row=1, column=1, pady=5)
+        setButt = tk.Button(self, text="Set Parameters",
+                                       width=20, height=2, command=lambda: setParam(controller.sharedUser["mode"].get()))
+        setButt.grid(row=2, column=1, pady=5)  # setBUtt button calls setParam
 
 
-class afterLogin(tk.Frame):
+class afterLogin(tk.Frame):  # page after login success
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        # Title label
 
-        def modeSelect(mode):
+        def modeSelect(mode):  # sets mode depending on button press
             if (mode == "AOO"):
                 controller.sharedUser["mode"].set("AOO")
             elif (mode == "VOO"):
                 controller.sharedUser["mode"].set("VOO")
             elif (mode == "AAI"):
-                controller.sharedUser["mode"].set("AII")
+                controller.sharedUser["mode"].set("AAI")
             elif (mode == "VVI"):
                 controller.sharedUser["mode"].set("VVI")
-            controller.dispFrame("modeP")
+            controller.dispFrame("modeP")  # calls modeP page to front
 
-        title = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
-                         justify='center', font="default, 25")
-        title.grid(row=0, column=1, pady=10, padx=200)
+        def refreshConnection():  # refresh connection for device connection and id checking- will be improved with serial comms
+            connected = True  # testing purposes change to true as simulated connection
+            different = True  # testing purposes change value
+            connection.set("Connected" if connected else "Disconnected")
+            # will show different device label if different ids- from serialCom.py
+            if (different == True and connected == True):
+                showDifferent.grid(row=1, column=3)
+            else:
+                showDifferent.grid_forget()  # removes different label from user view
+
+        def signOut():  # signs out user by going to welcome page and removing username history from shared variable
+            username.config(
+                textvariable=controller.sharedUser["username"].set(""))
+            controller.dispFrame("welcomeP")
+
+        connection = tk.StringVar(
+            self, "Connected" if connected else "Disconnected")  # connection stringVar that gets value from initial value of connected from serialCom.py
+        showConnection = tk.Label(self, textvariable=connection, fg='Blue', bg=BGCOLOR,
+                                  justify='center', font="default, 25")
+        showConnection.grid(row=0, column=3)
+
+        showDifferent = tk.Label(self, text="New Pacemaker", fg='Blue', bg=BGCOLOR,
+                                 justify='center', font="default, 25")
+        # shows different label if both different and connected are true
+        if (different == True and connected == True):
+            showDifferent.grid(row=1, column=3)
+
+        refreshButt = tk.Button(self, text="Check Connection", height=2,
+                                command=lambda: refreshConnection())  # user manually has to press refresh button for now
+        refreshButt.grid(row=2, column=3)
+        user = tk.Label(self, text="User:", fg='#F2BA49', bg=BGCOLOR,
+                        justify='center', font="default, 25")  # user label on screen to display "user:"
+        user.grid(row=0, column=2, pady=10, padx=150)
+        username = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
+                            justify='center', font="default, 25")  # displays username on screen
+        username.grid(row=1, column=2, padx=150)
         # back button
-        welcomeButt = tk.Button(self, text="To Main",
-                                width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
-        welcomeButt.grid(row=0, column=0, pady=5)
+        soButt = tk.Button(self, text="Sign Out",
+                           width=5, height=2, command=lambda: signOut())  # signout button calls signOut
+        soButt.grid(row=0, column=0, pady=5)
         AOO = tk.Button(self, text="AOO", width=5, height=2,
-                        command=lambda: modeSelect("AOO"))
+                        command=lambda: modeSelect("AOO"))  # different mode buttons that calls modeSelect and passes mode
         AOO.grid(row=1, column=0, pady=5)
         VOO = tk.Button(self, text="VOO", width=5, height=2,
                         command=lambda: modeSelect("VOO"))
@@ -122,47 +419,56 @@ class afterLogin(tk.Frame):
         VVI.grid(row=2, column=1, pady=5)
 
 
-class loginP(tk.Frame):
+class loginP(tk.Frame):  # login page
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
 
-        def clearBox():
+        def clearBox():  # removes all values from entry but also affects variable attached to them!!
             user.delete(0, tk.END)
             password.delete(0, tk.END)
 
+        # presses login button calls function from options.py
         def loginPressed(user, password):
             loginInfo = login(user, password)
+            # based on code- sent through to next page or has to properly login
             logCode = loginInfo[0]
             logMsg = loginInfo[1]
-            messagebox.showinfo(message=logMsg)
-            if (logCode == 2):
-                controller.dispFrame("afterLogin")
-            elif (logCode == 1):
+            if (logCode == 2):  # success
+                enterPass.set("")  # forgets password
+                controller.dispFrame("afterLogin")  # goes to next page
+            elif (logCode == 1):  # Issue type 1
+                # shows error message to user and try again
+                messagebox.showinfo(message=logMsg)
                 clearBox()
                 controller.dispFrame("welcomeP")
-            else:
+            else:  # Issue type 0 or unknown
+                messagebox.showinfo(message=logMsg)
                 clearBox()
+
+        def signOut():  # signout function for login page- i.e clears fields and goes to welcome screen
+            clearBox()
+            controller.dispFrame("welcomeP")
         # Title label
         title = tk.Label(self, text='Login', fg='#F2BA49', bg=BGCOLOR,
-                         justify='center', font="default, 25")
+                         justify='center', font="default, 25")  # Login title
         title.grid(row=0, column=1, pady=10, padx=200)
         # button for option select on welcome screen
         welcomeButt = tk.Button(self, text="To Main",
-                                width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
-        #enterUser = tk.StringVar()
-        enterPass = tk.StringVar()
-        user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
+                                width=5, height=2, command=lambda: signOut())
+
+        enterPass = tk.StringVar()  # password StringVar
+        user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,  # username field
                         textvariable=controller.sharedUser["username"], width=20)
-        password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
+        password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,  # password field
                             textvariable=enterPass, width=20)
-        userIns = tk.Label(self, text='Username:', fg='#F2BA49', bg=BGCOLOR,
+        userIns = tk.Label(self, text='Username:', fg='#F2BA49', bg=BGCOLOR,  # instructions
                            justify='center', font="default, 25")
         passIns = tk.Label(self, text='Password:', fg='#F2BA49', bg=BGCOLOR,
                            justify='center', font="default, 25")
-        submit = tk.Button(self, text="Login",
+        submit = tk.Button(self, text="Login",  # login button calls loginPressed()
                            width=5, height=2, command=lambda: loginPressed(controller.sharedUser["username"].get(), enterPass.get()))
-        # placement
+        # placement of labels and buttons
         welcomeButt.grid(row=0, column=0, pady=5)
         user.grid(row=2, column=1, pady=5)
         password.grid(row=3, column=1, pady=10)
@@ -171,29 +477,30 @@ class loginP(tk.Frame):
         submit.grid(row=4, column=1)
 
 
-class signupP(tk.Frame):
+class signupP(tk.Frame):  # signup frame
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
 
         self.controller = controller
         # submit control
 
-        def clearBox():
+        def clearBox():  # clears both passwords
             user.delete(0, tk.END)
             password.delete(0, tk.END)
             passwordTwo.delete(0, tk.END)
 
-        def signupcheck(user, pw, pwconf):
+        def signupcheck(user, pw, pwconf):  # calls options function signup()
             clearBox()
+            # list of code and message of signup() results
             signupRecieved = signup(user, pw, pwconf)
             checkCode = signupRecieved[0]
             messageInfo = signupRecieved[1]
             messagebox.showinfo(message=messageInfo)
-            if (checkCode == 2):
+            if (checkCode == 2):  # can login
                 controller.dispFrame("loginP")
-            elif (checkCode == 1):
+            elif (checkCode == 1):  # does nothing because error is retyping issue
                 pass
-            else:
+            else:  # goes back to welcome screen option=0
                 controller.dispFrame("welcomeP")
         # Title label
         title = tk.Label(self, text='Signup', fg='#F2BA49', bg=BGCOLOR,
@@ -203,8 +510,9 @@ class signupP(tk.Frame):
         welcomeButt = tk.Button(self, text="To Main",
                                 width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
         enterUser = tk.StringVar()
-        enterPass = tk.StringVar()
+        enterPass = tk.StringVar()  # stringVars for field entries
         enterPassTwo = tk.StringVar()
+        # entry boxes
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                         textvariable=enterUser, width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
@@ -235,17 +543,16 @@ class deleteP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        # submit control
 
         def clearBox():
             user.delete(0, tk.END)
             password.delete(0, tk.END)
 
-        def deleteUser(user, pw):
+        def deleteUser(user, pw):  # calls delete() method in options
             clearBox()
             deleteMsg = delete(user, pw)
             messagebox.showinfo(message=deleteMsg)
-            controller.dispFrame("welcomeP")
+            controller.dispFrame("welcomeP")  # goes back to welcome page
         # Title label
         title = tk.Label(self, text='Delete', fg='#F2BA49', bg=BGCOLOR,
                          justify='center', font="default, 25")
@@ -253,13 +560,13 @@ class deleteP(tk.Frame):
         # buttons and entries
         welcomeButt = tk.Button(self, text="To Main",
                                 width=5, height=2, command=lambda: controller.dispFrame("welcomeP"))
-        enterUser = tk.StringVar()
+        enterUser = tk.StringVar()  # user password entry
         enterPass = tk.StringVar()
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                         textvariable=enterUser, width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                             textvariable=enterPass, width=20)
-        submit = tk.Button(self, text="Submit",
+        submit = tk.Button(self, text="Submit",  # submit button calls deleteUser()
                            width=5, height=2, command=lambda: deleteUser(enterUser.get(), enterPass.get()))
         # labels
         userIns = tk.Label(self, text='Username:', fg='#F2BA49', bg=BGCOLOR,
@@ -278,5 +585,5 @@ class deleteP(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = gui()
-    app.mainloop()
+    app = gui()  # gui instance
+    app.mainloop()  # mainloop runs program

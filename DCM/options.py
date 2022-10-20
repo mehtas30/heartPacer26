@@ -1,3 +1,7 @@
+from turtle import update
+from storeAttributes import *
+
+
 def counter():
     database = open("Database", "r")  # open and read the database text file
     counts = 0  # create a variable counts and set the intial value to 0
@@ -62,6 +66,8 @@ def signup(username, password, confirm_password):
                 print("Password and Username can not be the same")
                 # signup()  # give the user another attempt to signup
                 return 1, "Password and Username can not be the same"
+            elif username.strip() == 'user' or password.strip() == 'user':
+                return 1, "Fields cannot be user"
             else:  # if everything passes then
                 # open up the databse text file
                 database = open("Database", "a")
@@ -74,6 +80,8 @@ def signup(username, password, confirm_password):
                 for mode in modes:
                     paraDb.write(mode+": "+"\n")
                 paraDb.close()
+                createDB()
+                updateUser(username)
                 # tell the user that the new account is succesfully created
                 print("Successfully created an account for",
                       username, "please login")
@@ -83,7 +91,7 @@ def signup(username, password, confirm_password):
 
 def login(username, password):
     returnArr = []
-    database = open("Database", "a") #creates db if not there
+    database = open("Database", "a")  # creates db if not there
     database.close()
     database = open("Database", "r")  # open and read the database text file
     # if the number of chartecters entered for username or password is not less then 1 then
@@ -154,6 +162,8 @@ def delete(username, password):
             line.remove(line[i])
             # let the user name the account is deleted
             confirm = "Successfully deleted! please create a new account, or login"
+            createDB()
+            paramDelete(username)
             break
     # open and write in the database text file
     database = open("Database", "w")
@@ -165,7 +175,7 @@ def delete(username, password):
     else:
         return confirm
 
-
+# Test function
 # def select():
 #     # asks user for what they want to do either login, signup, or delete an account
 #     option = input("Login | Signup | Delete:")
