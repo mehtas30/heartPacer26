@@ -32,7 +32,7 @@ class gui (tk.Tk):  # tk.TK is root
             frame.grid(row=0, column=0, sticky='nesw')
             # pagename dictionary with frame objects
             self.pageInfo[pageName] = frame
-        self.dispFrame('loginP')  # show welcome first
+        self.dispFrame('welcomeP')  # show welcome first
 
     def dispFrame(self, pageName):  # display frame based on name- creates instances
         page = self.pageInfo[pageName]
@@ -367,7 +367,7 @@ class afterLogin(tk.Frame):  # page after login success
 
         def refreshConnection():  # refresh connection for device connection and id checking- will be improved with serial comms
             connected = True  # testing purposes change to true as simulated connection
-            different = False  # testing purposes change value
+            different = True  # testing purposes change value
             connection.set("Connected" if connected else "Disconnected")
             # will show different device label if different ids- from serialCom.py
             if (different == True and connected == True):
