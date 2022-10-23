@@ -32,7 +32,7 @@ class gui (tk.Tk):  # tk.TK is root
             frame.grid(row=0, column=0, sticky='nesw')
             # pagename dictionary with frame objects
             self.pageInfo[pageName] = frame
-        self.dispFrame('loginP')  # show welcome first
+        self.dispFrame('welcomeP')  # show welcome first
 
     def dispFrame(self, pageName):  # display frame based on name- creates instances
         page = self.pageInfo[pageName]

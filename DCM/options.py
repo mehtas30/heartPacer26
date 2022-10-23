@@ -49,6 +49,12 @@ def signup(username, password, confirm_password):
             print("Passwords don't match, please try again")
             return 1, "Passwords don't match, please try again"
         else:  # if the passwords match then
+            for letter in password:
+                if (letter == " "):
+                    return 1, "Password cannot have space"
+            for uletter in username:
+                if (uletter == " "):
+                    return 1, "Username cannot have space"
             if len(password) < 4:  # make sure the password is longer than 4 characters
                 # if the password is not longer than 4 charecters then tell the user the passwords to short
                 print("Password to short, please have more than 4 characters")
