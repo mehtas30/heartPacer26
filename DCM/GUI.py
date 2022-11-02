@@ -197,7 +197,7 @@ class modeP(tk.Frame):
             errorMsg = ""  # error message empty string
             # all variables must get passed each condition for checked to return True or error message will show
             if (LRLStringVar.get() >= 30 and LRLStringVar.get() <= 175):
-                if (URLStringVar.get() >= 50 and URLStringVar.get() <= 175):
+                if (URLStringVar.get() >= 50 and URLStringVar.get() <= 175 and URLStringVar.get() > LRLStringVar.get()):
                     if (mode == 'AOO'):
                         if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.5 and AampStringVar.get() <= 3.2)):
                             if (APWStringVar.get() == 0.05 or (APWStringVar.get() >= 0.1 and APWStringVar.get() <= 1.9)):
@@ -237,7 +237,7 @@ class modeP(tk.Frame):
                         else:
                             errorMsg = "V amplitude has to be 0 or between 0.5 and 3.2"
                 else:
-                    errorMsg = "URL has to be between 50 and 175"
+                    errorMsg = "URL has to be between 50 and 175 and bigger then LRL"
             else:
                 errorMsg = "LRL has to be between 30 and 175"
             if (checked == True):
@@ -461,7 +461,7 @@ class loginP(tk.Frame):  # login page
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,  # username field
                         textvariable=controller.sharedUser["username"], width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,  # password field
-                            textvariable=enterPass, width=20)
+                            textvariable=enterPass, width=20, show='*')
         userIns = tk.Label(self, text='Username:', fg='#F2BA49', bg=BGCOLOR,  # instructions
                            justify='center', font="default, 25")
         passIns = tk.Label(self, text='Password:', fg='#F2BA49', bg=BGCOLOR,
@@ -516,9 +516,9 @@ class signupP(tk.Frame):  # signup frame
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                         textvariable=enterUser, width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
-                            textvariable=enterPass, width=20)
+                            textvariable=enterPass, width=20, show='*')
         passwordTwo = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
-                               textvariable=enterPassTwo, width=20)
+                               textvariable=enterPassTwo, width=20, show='*')
         submit = tk.Button(self, text="Submit",
                            width=5, height=2, command=lambda: signupcheck(enterUser.get(), enterPass.get(), enterPassTwo.get()))
         # labels
@@ -526,7 +526,7 @@ class signupP(tk.Frame):  # signup frame
                            justify='center', font="default, 25")
         passIns = tk.Label(self, text='Password:', fg='#F2BA49', bg=BGCOLOR,
                            justify='center', font="default, 25")
-        passInsTwo = tk.Label(self, text='Password:', fg='#F2BA49', bg=BGCOLOR,
+        passInsTwo = tk.Label(self, text='Confirm Password:', fg='#F2BA49', bg=BGCOLOR,
                               justify='center', font="default, 25")
         # placement
         welcomeButt.grid(row=0, column=0, pady=5)
@@ -565,7 +565,7 @@ class deleteP(tk.Frame):
         user = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
                         textvariable=enterUser, width=20)
         password = tk.Entry(self, bg="#FFFF9F", fg=BGCOLOR,
-                            textvariable=enterPass, width=20)
+                            textvariable=enterPass, width=20, show='*')
         submit = tk.Button(self, text="Submit",  # submit button calls deleteUser()
                            width=5, height=2, command=lambda: deleteUser(enterUser.get(), enterPass.get()))
         # labels
