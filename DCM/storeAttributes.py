@@ -17,7 +17,15 @@ def createDB():  # create DB will create the database if it is not there otherwi
             VAMP real,
             VPW real,
             VRP real,
-            ARP real
+            ARP real,
+            MSR real, 
+            Asens real,
+            Vsens real,
+            PVARP real,
+            ActivityThresh real,
+            Rxtime real,
+            responseFactor real,
+            recovTime real
          )''')  # docstring comment for multiple lines
         dbConnection.commit()  # close transaction
         curs.close()  # closes db
@@ -28,7 +36,7 @@ def createDB():  # create DB will create the database if it is not there otherwi
 def updateUser(username):  # creates new user with null parameter values
     dbConnection = sqlite3.connect('parameter.db')
     curs = dbConnection.cursor()
-    curs.execute('INSERT INTO userParams VALUES (:user,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)', {
+    curs.execute('INSERT INTO userParams VALUES (:user,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)', {
                  'user': username})  # sql insertion with dictionary to insert variable
     # data = curs.execute('SELECT * From userParams')
     # print('create \n')
@@ -60,11 +68,11 @@ def setParams(username, pChange, mode):
         curs.execute('UPDATE userParams set LRL= :lrl, URL= :url, VAMP= :vamp, VPW= :vpw WHERE USER= :user', {
                      'user': username, 'lrl': pChange[0], 'url': pChange[1], 'vamp': pChange[2], 'vpw': pChange[3]})
     elif (mode == "AAI"):  # finds user and updates the specific parameters with order given by frontend
-        curs.execute('UPDATE userParams set LRL= :lrl, URL= :url, AAMP= :aamp, APW= :apw, ARP= :arp WHERE USER= :user', {
-            'user': username, 'lrl': pChange[0], 'url': pChange[1], 'aamp': pChange[2], 'apw': pChange[3], 'arp': pChange[4]})
+        curs.execute('UPDATE userParams set LRL= :lrl, URL= :url, AAMP= :aamp, APW= :apw, ARP= :arp, Asens= :asens, PVARP= :pvarp  WHERE USER= :user', {
+            'user': username, 'lrl': pChange[0], 'url': pChange[1], 'aamp': pChange[2], 'apw': pChange[3], 'arp': pChange[4], 'asens': pChange[5], 'pvarp': pChange[6]})
     elif (mode == "VVI"):  # finds user and updates the specific parameters with order given by frontend
-        curs.execute('UPDATE userParams set LRL= :lrl, URL= :url, VAMP= :vamp, VPW= :vpw, VRP= :vrp WHERE USER= :user', {
-            'user': username, 'lrl': pChange[0], 'url': pChange[1], 'vamp': pChange[2], 'vpw': pChange[3], 'vrp': pChange[4]})
+        curs.execute('UPDATE userParams set LRL= :lrl, URL= :url, VAMP= :vamp, VPW= :vpw, VRP= :vrp, Vsens= :vsens WHERE USER= :user', {
+            'user': username, 'lrl': pChange[0], 'url': pChange[1], 'vamp': pChange[2], 'vpw': pChange[3], 'vrp': pChange[4], 'vsens': pChange[5]})
     else:
         print('mode doesnt exist')
     # data = curs.execute('SELECT * From userParams')
@@ -85,10 +93,10 @@ def getParams(username, mode):  # gets the parameters and returns list of values
         params = curs.execute('SELECT LRL,URL,VAMP,VPW FROM userParams WHERE USER= :user', {
             'user': username})
     elif (mode == "AAI"):  # gets specific parameters based on mode selected and username
-        params = curs.execute('SELECT LRL,URL,AAMP,APW,ARP FROM userParams WHERE USER= :user', {
+        params = curs.execute('SELECT LRL,URL,AAMP,APW,ARP,Asens,PVARP FROM userParams WHERE USER= :user', {
             'user': username})
     elif (mode == "VVI"):  # gets specific parameters based on mode selected and username
-        params = curs.execute('SELECT LRL,URL,VAMP,VPW,VRP FROM userParams WHERE USER= :user', {
+        params = curs.execute('SELECT LRL,URL,VAMP,VPW,VRP,Vsens FROM userParams WHERE USER= :user', {
             'user': username})
     else:
         print('mode doesnt exist')

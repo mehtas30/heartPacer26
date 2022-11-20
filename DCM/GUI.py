@@ -76,6 +76,14 @@ class modeP(tk.Frame):
         VPWStringVar = tk.DoubleVar(self, "")
         ARPStringVar = tk.DoubleVar(self, "")
         VRPStringVar = tk.DoubleVar(self, "")
+        MSRStringVar = tk.DoubleVar(self, "")
+        AsensStringVar = tk.DoubleVar(self, "")
+        VsensStringVar = tk.DoubleVar(self, "")
+        PVARPStringVar = tk.DoubleVar(self, "")
+        ActivityThreshStringVar = tk.DoubleVar(self, "")
+        RxtimeStringVar = tk.DoubleVar(self, "")
+        responseFactorStringVar = tk.DoubleVar(self, "")
+        recovTimeStringVar = tk.DoubleVar(self, "")
         # to be set/displayed
 
         # displaying parameters by getting them from SQL db user/mode needed for qry
@@ -117,7 +125,8 @@ class modeP(tk.Frame):
                         str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
                         str(parameterList[2])+"\n VPW: " + \
                         str(parameterList[3])+"\n VRP: " + \
-                        str(parameterList[4])
+                        str(parameterList[4])+"\n V Sensitivity: " + \
+                        str(parameterList[5])
                     parameterlabel.config(text=pLabelText)
             elif (mode == "AAI"):  # same concept as AOO above
                 parameterList = getParams(userName, mode)
@@ -129,10 +138,77 @@ class modeP(tk.Frame):
                         str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
                         str(parameterList[2])+"\n APW: " + \
                         str(parameterList[3])+"\n ARP: " + \
-                        str(parameterList[4])
+                        str(parameterList[4])+"\n A Sensitivity: " + \
+                        str(parameterList[5])+"\n  PVARP: " + \
+                        str(parameterList[6])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "AOOR"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
+                        str(parameterList[2])+"\n APW: " + \
+                        str(parameterList[3])+"\n MSR: " + \
+                        str(parameterList[4])+"\n  Activity Threshold: " + \
+                        str(parameterList[5])+"\n  Reaction Time: " + \
+                        str(parameterList[6])+"\n  Response Factor: " + \
+                        str(parameterList[7])+"\n  Recovery Time: " + \
+                        str(parameterList[8])
+            elif (mode == "VOOR"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])+"\n MSR: " + \
+                        str(parameterList[4])+"\n  Activity Threshold: " + \
+                        str(parameterList[5])+"\n  Reaction Time: " + \
+                        str(parameterList[6])+"\n  Response Factor: " + \
+                        str(parameterList[7])+"\n  Recovery Time: " + \
+                        str(parameterList[8])
+            elif (mode == "AAIR"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n AAMP: " + \
+                        str(parameterList[2])+"\n APW: " + \
+                        str(parameterList[3])+"\n ARP: " + \
+                        str(parameterList[4])+"\n A Sensitivity: " + \
+                        str(parameterList[5])+"\n  PVARP: " + \
+                        str(parameterList[6]) + "\n MSR: " + \
+                        str(parameterList[7]) + "\n  Reaction Time: " + \
+                        str(parameterList[8])+"\n  Response Factor: " + \
+                        str(parameterList[9])+"\n  Recovery Time: " + \
+                        str(parameterList[10])
+                    parameterlabel.config(text=pLabelText)
+            elif (mode == "VVIR"):  # same concept as AOO above
+                parameterList = getParams(userName, mode)
+                if (parameterList == None):
+                    parameterlabel.config(text="no parameters")
+                else:
+                    # get from text file
+                    pLabelText = "LRL: " + \
+                        str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
+                        str(parameterList[2])+"\n VPW: " + \
+                        str(parameterList[3])+"\n VRP: " + \
+                        str(parameterList[4])+"\n V Sensitivity: " + \
+                        str(parameterList[5]) + "\n MSR: " + \
+                        str(parameterList[7]) + "\n  Reaction Time: " + \
+                        str(parameterList[8])+"\n  Response Factor: " + \
+                        str(parameterList[9])+"\n  Recovery Time: " + \
+                        str(parameterList[10])
                     parameterlabel.config(text=pLabelText)
             else:  # incase something goes wrong and for testing
-                parameterlabel.config(text="diff mode")
+                parameterlabel.config(text="Mode does not exist yet")
             # places the label to be viewed
             parameterlabel.grid(row=2, column=1)
 
@@ -168,18 +244,24 @@ class modeP(tk.Frame):
                 paramEntries[2].config(textvariable=AampStringVar)
                 paramEntries[3].config(textvariable=APWStringVar)
                 paramEntries[7].config(textvariable=ARPStringVar)
+                paramEntries[9].config(textvariable=AsensStringVar)
+                paramEntries[11].config(textvariable=PVARPStringVar)
                 for i in range(4):
                     paramInstructions[i].grid(row=i+1, column=0, pady=5)
                     paramEntries[i].grid(row=i+1, column=1, pady=5)
                 paramInstructions[7].grid(row=5, column=0, pady=5)
                 paramEntries[7].grid(row=5, column=1, pady=5)
-
+                paramInstructions[9].grid(row=6, column=0, pady=5)
+                paramEntries[9].grid(row=6, column=1, pady=5)
+                paramInstructions[11].grid(row=7, column=0, pady=5)
+                paramEntries[11].grid(row=7, column=1, pady=5)
             elif (mode == 'VVI'):  # same as AOO
                 paramEntries[0].config(textvariable=LRLStringVar)
                 paramEntries[1].config(textvariable=URLStringVar)
                 paramEntries[4].config(textvariable=VampStringVar)
                 paramEntries[5].config(textvariable=VPWStringVar)
                 paramEntries[6].config(textvariable=VRPStringVar)
+                paramEntries[10].config(textvariable=VsensStringVar)
                 for i in range(2):
                     paramInstructions[i].grid(row=i+1, column=0, pady=5)
                     paramEntries[i].grid(row=i+1, column=1, pady=5)
@@ -189,8 +271,33 @@ class modeP(tk.Frame):
                 paramEntries[5].grid(row=4, column=1, pady=5)
                 paramInstructions[6].grid(row=5, column=0, pady=5)
                 paramEntries[6].grid(row=5, column=1, pady=5)
+                paramInstructions[10].grid(row=6, column=0, pady=5)
+                paramEntries[10].grid(row=6, column=1, pady=5)
+            elif (mode == "AOOR"):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[2].config(textvariable=AampStringVar)
+                paramEntries[3].config(textvariable=APWStringVar)
+                paramEntries[8].config(textvariable=MSRStringVar)
+                paramEntries[12].config(textvarialbe=ActivityThreshStringVar)
+                paramEntries[13].config(textvarialbe=RxtimeStringVar)
+                paramEntries[14].config(textvarialbe=responseFactorStringVar)
+                paramEntries[15].config(textvarialbe=recovTimeStringVar)
+                for i in range(4):  # places the instruction lables and entries
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[8].grid(row=5, column=0, pady=5)
+                paramEntries[8].grid(row=5, column=1, pady=5)
+                paramInstructions[12].grid(row=6, column=0, pady=5)
+                paramEntries[12].grid(row=6, column=1, pady=5)
+                paramInstructions[13].grid(row=6, column=0, pady=5)
+                paramEntries[13].grid(row=6, column=1, pady=5)
+                paramInstructions[14].grid(row=7, column=0, pady=5)
+                paramEntries[14].grid(row=7, column=1, pady=5)
+                paramInstructions[15].grid(row=8, column=0, pady=5)
+                paramEntries[15].grid(row=8, column=1, pady=5)
             # places submit button below all the other labels
-            submit.grid(row=6, column=1, pady=5)
+            submit.grid(row=0, column=2, pady=5)
 
         def verifySubmit(user, mode):  # verifies and writes to database using sql
             checked = False  # variable for verification pass/fail
@@ -199,43 +306,52 @@ class modeP(tk.Frame):
             if (LRLStringVar.get() >= 30 and LRLStringVar.get() <= 175):
                 if (URLStringVar.get() >= 50 and URLStringVar.get() <= 175 and URLStringVar.get() > LRLStringVar.get()):
                     if (mode == 'AOO'):
-                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.5 and AampStringVar.get() <= 3.2)):
-                            if (APWStringVar.get() == 0.05 or (APWStringVar.get() >= 0.1 and APWStringVar.get() <= 1.9)):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.1 and AampStringVar.get() <= 5)):
+                            if (APWStringVar.get() >= 1 and APWStringVar.get() <= 30):
                                 checked = True
                             else:
-                                errorMsg = "APW has to be 0.05 or between 0.1 and 1.9"
+                                errorMsg = "APW has to be between 1 and 30ms"
                         else:
-                            errorMsg = "A amplitude has to be 0 or between 0.5 and 3.2"
+                            errorMsg = "A amplitude has to be 0 or between 0.1 and 5"
                     elif (mode == 'VOO'):
-                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.5 and VampStringVar.get() <= 3.2)):
-                            if (VPWStringVar.get() == 0.05 or (VPWStringVar.get() >= 0.1 and VPWStringVar.get() <= 1.9)):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.1 and VampStringVar.get() <= 5)):
+                            if (VPWStringVar.get() >= 1 and VPWStringVar.get() <= 30):
                                 checked = True
                             else:
-                                errorMsg = "VPW has to be 0.05 or between 0.1 and 1.9"
+                                errorMsg = "VPW has to be between 1 and 30ms"
                         else:
-                            errorMsg = "V amplitude has to be 0 or between 0.5 and 3.2"
+                            errorMsg = "V amplitude has to be 0 or between 0.1 and 5"
                     elif (mode == 'AAI'):
-                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.5 and AampStringVar.get() <= 3.2)):
-                            if (APWStringVar.get() == 0.05 or (APWStringVar.get() >= 0.1 and APWStringVar.get() <= 1.9)):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.1 and AampStringVar.get() <= 5)):
+                            if (APWStringVar.get() >= 1 and APWStringVar.get() <= 30):
                                 if (ARPStringVar.get() >= 150 and ARPStringVar.get() <= 500):
-                                    checked = True
+                                    if (AsensStringVar.get() >= 0.0 and AsensStringVar.get() <= 5.0):
+                                        if (PVARPStringVar.get() >= 150 and PVARPStringVar.get() <= 500):
+                                            checked = True
+                                        else:
+                                            errorMsg = "PVARP has to be between 150 and 500"
+                                    else:
+                                        errorMsg = "Asens has to be between 0 and 5"
                                 else:
                                     errorMsg = "ARP has to be between 150 and 500"
                             else:
-                                errorMsg = "APW has to be 0.05 or between 0.1 and 1.9"
+                                errorMsg = "APW has to be between 1 and 30"
                         else:
-                            errorMsg = "A amplitude has to be 0 or between 0.5 and 3.2"
+                            errorMsg = "A amplitude has to be 0 or between 0.1 and 5"
                     elif (mode == 'VVI'):
-                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.5 and VampStringVar.get() <= 3.2)):
-                            if (VPWStringVar.get() == 0.05 or (VPWStringVar.get() >= 0.1 and VPWStringVar.get() <= 1.9)):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.1 and VampStringVar.get() <= 5)):
+                            if (VPWStringVar.get() >= 1 and VPWStringVar.get() <= 30):
                                 if (VRPStringVar.get() >= 150 and VRPStringVar.get() <= 500):
-                                    checked = True
+                                    if (VsensStringVar.get() >= 0.0 and VsensStringVar.get() <= 5.0):
+                                        checked = True
+                                    else:
+                                        errorMsg = "Vsens has to be between 0 and 5"
                                 else:
                                     errorMsg = "VRP has to be between 150 and 500"
                             else:
-                                errorMsg = "VPW has to be 0.05 or between 0.1 and 1.9"
+                                errorMsg = "VPW has to be 0.05 or between 1 and 30ms"
                         else:
-                            errorMsg = "V amplitude has to be 0 or between 0.5 and 3.2"
+                            errorMsg = "V amplitude has to be 0 or between 0.1 and 5"
                 else:
                     errorMsg = "URL has to be between 50 and 175 and bigger then LRL"
             else:
@@ -271,6 +387,7 @@ class modeP(tk.Frame):
                         paramList.append(VampStringVar.get())
                         paramList.append(VPWStringVar.get())
                         paramList.append(VRPStringVar.get())
+                        paramList.append(VsensStringVar.get())
                     except:
                         messagebox.showinfo(message="Inputs must be a number")
                 elif (mode == "AAI"):
@@ -282,6 +399,8 @@ class modeP(tk.Frame):
                         paramList.append(AampStringVar.get())
                         paramList.append(APWStringVar.get())
                         paramList.append(ARPStringVar.get())
+                        paramList.append(AsensStringVar.get())
+                        paramList.append(PVARPStringVar.get())
                     except:
                         messagebox.showinfo(message="Inputs must be a number")
                 else:  # if mode is not one of the 4 something went wrong in logic
@@ -297,6 +416,14 @@ class modeP(tk.Frame):
                 VPWStringVar.set("")
                 ARPStringVar.set("")
                 VRPStringVar.set("")
+                MSRStringVar.set("")
+                AsensStringVar.set("")
+                VsensStringVar.set("")
+                PVARPStringVar.set("")
+                ActivityThreshStringVar.set("")
+                RxtimeStringVar.set("")
+                responseFactorStringVar.set("")
+                recovTimeStringVar.set("")
                 # outputs to user success
                 messagebox.showinfo(message="Parameters Set")
             else:
@@ -321,7 +448,14 @@ class modeP(tk.Frame):
                                   justify='center', font="default, 25")  # Label for displaying parameters in read
 
         paramArr = ['LRL', 'URL', 'Aamp', 'APW', 'VAMP',
-                    'VPW', 'VRP', 'ARP']  # array of parameters
+                    'VPW', 'VRP', 'ARP', 'MSR',
+                    'Asens',
+                    'Vsens',
+                    'PVARP',
+                    'ActivityThresh',
+                    'Rxtime',
+                    'responseFactor',
+                    'recovTime']  # array of parameters
         paramEntries = []  # entry box array for parameter
         paramInstructions = []  # entry box instructions for parameters
         emptyStringVar = tk.StringVar(self, "")  # empty StringVar
@@ -363,6 +497,14 @@ class afterLogin(tk.Frame):  # page after login success
                 controller.sharedUser["mode"].set("AAI")
             elif (mode == "VVI"):
                 controller.sharedUser["mode"].set("VVI")
+            elif (mode == "AOOR"):
+                controller.sharedUser["mode"].set("AOOR")
+            elif (mode == "VOOR"):
+                controller.sharedUser["mode"].set("VOOR")
+            elif (mode == "AAIR"):
+                controller.sharedUser["mode"].set("AAIR")
+            elif (mode == "VVIR"):
+                controller.sharedUser["mode"].set("VVIR")
             controller.dispFrame("modeP")  # calls modeP page to front
 
         def refreshConnection():  # refresh connection for device connection and id checking- will be improved with serial comms
@@ -417,6 +559,18 @@ class afterLogin(tk.Frame):  # page after login success
         VVI = tk.Button(self, text="VVI", width=5, height=2,
                         command=lambda: modeSelect("VVI"))
         VVI.grid(row=2, column=1, pady=5)
+        AOOR = tk.Button(self, text="AOOR", width=5, height=2,
+                         command=lambda: modeSelect("AOOR"))
+        AOOR.grid(row=3, column=0, pady=5)
+        VOOR = tk.Button(self, text="VOOR", width=5, height=2,
+                         command=lambda: modeSelect("VOOR"))
+        VOOR.grid(row=3, column=1, pady=5)
+        AAIR = tk.Button(self, text="AAIR", width=5, height=2,
+                         command=lambda: modeSelect("AAIR"))
+        AAIR.grid(row=4, column=0, pady=5)
+        VVIR = tk.Button(self, text="VVIR", width=5, height=2,
+                         command=lambda: modeSelect("VVIR"))
+        VVIR.grid(row=4, column=1, pady=5)
 
 
 class loginP(tk.Frame):  # login page
