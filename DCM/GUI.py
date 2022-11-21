@@ -157,12 +157,13 @@ class modeP(tk.Frame):
                         str(parameterList[6])+"\n  Response Factor: " + \
                         str(parameterList[7])+"\n  Recovery Time: " + \
                         str(parameterList[8])
+                    parameterlabel.config(text=pLabelText)
             elif (mode == "VOOR"):  # same concept as AOO above
                 parameterList = getParams(userName, mode)
                 if (parameterList == None):
                     parameterlabel.config(text="no parameters")
                 else:
-                    # get from text file
+                    # get from db
                     pLabelText = "LRL: " + \
                         str(parameterList[0])+"\n URL: "+str(parameterList[1])+"\n VAMP: " + \
                         str(parameterList[2])+"\n VPW: " + \
@@ -172,6 +173,7 @@ class modeP(tk.Frame):
                         str(parameterList[6])+"\n  Response Factor: " + \
                         str(parameterList[7])+"\n  Recovery Time: " + \
                         str(parameterList[8])
+                    parameterlabel.config(text=pLabelText)
             elif (mode == "AAIR"):  # same concept as AOO above
                 parameterList = getParams(userName, mode)
                 if (parameterList == None):
@@ -279,10 +281,10 @@ class modeP(tk.Frame):
                 paramEntries[2].config(textvariable=AampStringVar)
                 paramEntries[3].config(textvariable=APWStringVar)
                 paramEntries[8].config(textvariable=MSRStringVar)
-                paramEntries[12].config(textvarialbe=ActivityThreshStringVar)
-                paramEntries[13].config(textvarialbe=RxtimeStringVar)
-                paramEntries[14].config(textvarialbe=responseFactorStringVar)
-                paramEntries[15].config(textvarialbe=recovTimeStringVar)
+                paramEntries[12].config(textvariable=ActivityThreshStringVar)
+                paramEntries[13].config(textvariable=RxtimeStringVar)
+                paramEntries[14].config(textvariable=responseFactorStringVar)
+                paramEntries[15].config(textvariable=recovTimeStringVar)
                 for i in range(4):  # places the instruction lables and entries
                     paramInstructions[i].grid(row=i+1, column=0, pady=5)
                     paramEntries[i].grid(row=i+1, column=1, pady=5)
@@ -290,12 +292,104 @@ class modeP(tk.Frame):
                 paramEntries[8].grid(row=5, column=1, pady=5)
                 paramInstructions[12].grid(row=6, column=0, pady=5)
                 paramEntries[12].grid(row=6, column=1, pady=5)
-                paramInstructions[13].grid(row=6, column=0, pady=5)
-                paramEntries[13].grid(row=6, column=1, pady=5)
-                paramInstructions[14].grid(row=7, column=0, pady=5)
-                paramEntries[14].grid(row=7, column=1, pady=5)
-                paramInstructions[15].grid(row=8, column=0, pady=5)
-                paramEntries[15].grid(row=8, column=1, pady=5)
+                paramInstructions[13].grid(row=7, column=0, pady=5)
+                paramEntries[13].grid(row=7, column=1, pady=5)
+                paramInstructions[14].grid(row=8, column=0, pady=5)
+                paramEntries[14].grid(row=8, column=1, pady=5)
+                paramInstructions[15].grid(row=9, column=0, pady=5)
+                paramEntries[15].grid(row=9, column=1, pady=5)
+            elif (mode == "VOOR"):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                paramEntries[8].config(textvariable=MSRStringVar)
+                paramEntries[12].config(textvariable=ActivityThreshStringVar)
+                paramEntries[13].config(textvariable=RxtimeStringVar)
+                paramEntries[14].config(textvariable=responseFactorStringVar)
+                paramEntries[15].config(textvariable=recovTimeStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+                paramInstructions[8].grid(row=5, column=0, pady=5)
+                paramEntries[8].grid(row=5, column=1, pady=5)
+                paramInstructions[12].grid(row=6, column=0, pady=5)
+                paramEntries[12].grid(row=6, column=1, pady=5)
+                paramInstructions[13].grid(row=7, column=0, pady=5)
+                paramEntries[13].grid(row=7, column=1, pady=5)
+                paramInstructions[14].grid(row=8, column=0, pady=5)
+                paramEntries[14].grid(row=8, column=1, pady=5)
+                paramInstructions[15].grid(row=9, column=0, pady=5)
+                paramEntries[15].grid(row=9, column=1, pady=5)
+            elif (mode == "VVIR"):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[4].config(textvariable=VampStringVar)
+                paramEntries[5].config(textvariable=VPWStringVar)
+                paramEntries[6].config(textvariable=VRPStringVar)
+                paramEntries[10].config(textvariable=VsensStringVar)
+                paramEntries[8].config(textvariable=MSRStringVar)
+                paramEntries[12].config(textvariable=ActivityThreshStringVar)
+                paramEntries[13].config(textvariable=RxtimeStringVar)
+                paramEntries[14].config(textvariable=responseFactorStringVar)
+                paramEntries[15].config(textvariable=recovTimeStringVar)
+                for i in range(2):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[4].grid(row=3, column=0, pady=5)
+                paramInstructions[5].grid(row=4, column=0, pady=5)
+                paramEntries[4].grid(row=3, column=1, pady=5)
+                paramEntries[5].grid(row=4, column=1, pady=5)
+                paramInstructions[6].grid(row=5, column=0, pady=5)
+                paramEntries[6].grid(row=5, column=1, pady=5)
+                paramInstructions[10].grid(row=6, column=0, pady=5)
+                paramEntries[10].grid(row=6, column=1, pady=5)
+                paramInstructions[8].grid(row=7, column=0, pady=5)
+                paramEntries[8].grid(row=7, column=1, pady=5)
+                paramInstructions[12].grid(row=8, column=0, pady=5)
+                paramEntries[12].grid(row=8, column=1, pady=5)
+                paramInstructions[13].grid(row=9, column=0, pady=5)
+                paramEntries[13].grid(row=9, column=1, pady=5)
+                paramInstructions[14].grid(row=10, column=0, pady=5)
+                paramEntries[14].grid(row=10, column=1, pady=5)
+                paramInstructions[15].grid(row=11, column=0, pady=5)
+                paramEntries[15].grid(row=11, column=1, pady=5)
+            elif (mode == "AAIR"):
+                paramEntries[0].config(textvariable=LRLStringVar)
+                paramEntries[1].config(textvariable=URLStringVar)
+                paramEntries[2].config(textvariable=AampStringVar)
+                paramEntries[3].config(textvariable=APWStringVar)
+                paramEntries[7].config(textvariable=ARPStringVar)
+                paramEntries[9].config(textvariable=AsensStringVar)
+                paramEntries[11].config(textvariable=PVARPStringVar)
+                paramEntries[8].config(textvariable=MSRStringVar)
+                paramEntries[12].config(textvariable=ActivityThreshStringVar)
+                paramEntries[13].config(textvariable=RxtimeStringVar)
+                paramEntries[14].config(textvariable=responseFactorStringVar)
+                paramEntries[15].config(textvariable=recovTimeStringVar)
+                for i in range(4):
+                    paramInstructions[i].grid(row=i+1, column=0, pady=5)
+                    paramEntries[i].grid(row=i+1, column=1, pady=5)
+                paramInstructions[7].grid(row=5, column=0, pady=5)
+                paramEntries[7].grid(row=5, column=1, pady=5)
+                paramInstructions[9].grid(row=6, column=0, pady=5)
+                paramEntries[9].grid(row=6, column=1, pady=5)
+                paramInstructions[11].grid(row=7, column=0, pady=5)
+                paramEntries[11].grid(row=7, column=1, pady=5)
+                paramInstructions[8].grid(row=8, column=0, pady=5)
+                paramEntries[8].grid(row=8, column=1, pady=5)
+                paramInstructions[12].grid(row=9, column=0, pady=5)
+                paramEntries[12].grid(row=9, column=1, pady=5)
+                paramInstructions[13].grid(row=10, column=0, pady=5)
+                paramEntries[13].grid(row=10, column=1, pady=5)
+                paramInstructions[14].grid(row=11, column=0, pady=5)
+                paramEntries[14].grid(row=11, column=1, pady=5)
+                paramInstructions[15].grid(row=12, column=0, pady=5)
+                paramEntries[15].grid(row=12, column=1, pady=5)
             # places submit button below all the other labels
             submit.grid(row=0, column=2, pady=5)
 
@@ -352,10 +446,118 @@ class modeP(tk.Frame):
                                 errorMsg = "VPW has to be 0.05 or between 1 and 30ms"
                         else:
                             errorMsg = "V amplitude has to be 0 or between 0.1 and 5"
+                    elif (mode == 'AOOR'):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.1 and AampStringVar.get() <= 5)):
+                            if (APWStringVar.get() >= 1 and APWStringVar.get() <= 30):
+                                if (MSRStringVar.get() >= 50 and MSRStringVar.get() <= 175):
+                                    if (ActivityThreshStringVar.get() >= 0 and ActivityThreshStringVar.get() <= 6):
+                                        if (RxtimeStringVar.get() >= 10 and RxtimeStringVar.get() <= 50):
+                                            if (responseFactorStringVar.get() >= 1 and responseFactorStringVar.get() <= 16):
+                                                if (recovTimeStringVar.get() >= 2 and recovTimeStringVar.get() <= 16):
+                                                    checked = True
+                                                else:
+                                                    errorMsg = "Recovery Time must be between 2 and 16"
+                                            else:
+                                                errorMsg = "Response Factor must be between 1 and 16"
+                                        else:
+                                            errorMsg = "Reaction time must be between 10 and 50"
+                                    else:
+                                        errorMsg = "Activity Threshold has to be between 0-6 for V-LOW to V-HIGH"
+                                else:
+                                    errorMsg = "MSR has to be between 50 and 175"
+                            else:
+                                errorMsg = "APW has to be between 1 and 30ms"
+                        else:
+                            errorMsg = "A amplitude has to be 0 or between 0.1 and 5"
+                    elif (mode == 'AAIR'):
+                        if (AampStringVar.get() == 0 or (AampStringVar.get() >= 0.1 and AampStringVar.get() <= 5)):
+                            if (APWStringVar.get() >= 1 and APWStringVar.get() <= 30):
+                                if (MSRStringVar.get() >= 50 and MSRStringVar.get() <= 175):
+                                    if (ActivityThreshStringVar.get() >= 0 and ActivityThreshStringVar.get() <= 6):
+                                        if (RxtimeStringVar.get() >= 10 and RxtimeStringVar.get() <= 50):
+                                            if (responseFactorStringVar.get() >= 1 and responseFactorStringVar.get() <= 16):
+                                                if (recovTimeStringVar.get() >= 2 and recovTimeStringVar.get() <= 16):
+                                                    if (AsensStringVar.get() >= 0 and AsensStringVar.get() <= 5):
+                                                        if (ARPStringVar.get() >= 150 and ARPStringVar.get() <= 500):
+                                                            if (PVARPStringVar.get() >= 150 and PVARPStringVar.get() <= 500):
+                                                                checked = True
+                                                            else:
+                                                                errorMsg = "PVARP must be between 150 and 500"
+                                                        else:
+                                                            errorMsg = "ARP must be between 150 and 500"
+                                                    else:
+                                                        errorMsg = "Senstivity must be between 0 and 5"
+                                                else:
+                                                    errorMsg = "Recovery Time must be between 2 and 16"
+                                            else:
+                                                errorMsg = "Response Factor must be between 1 and 16"
+                                        else:
+                                            errorMsg = "Reaction time must be between 10 and 50"
+                                    else:
+                                        errorMsg = "Activity Threshold has to be between 0-6 for V-LOW to V-HIGH"
+                                else:
+                                    errorMsg = "MSR has to be between 50 and 175"
+                            else:
+                                errorMsg = "APW has to be between 1 and 30ms"
+                        else:
+                            errorMsg = "A amplitude has to be 0 or between 0.1 and 5"
+                    elif (mode == 'VVIR'):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.1 and VampStringVar.get() <= 5)):
+                            if (VPWStringVar.get() >= 1 and VPWStringVar.get() <= 30):
+                                if (MSRStringVar.get() >= 50 and MSRStringVar.get() <= 175):
+                                    if (ActivityThreshStringVar.get() >= 0 and ActivityThreshStringVar.get() <= 6):
+                                        if (RxtimeStringVar.get() >= 10 and RxtimeStringVar.get() <= 50):
+                                            if (responseFactorStringVar.get() >= 1 and responseFactorStringVar.get() <= 16):
+                                                if (recovTimeStringVar.get() >= 2 and recovTimeStringVar.get() <= 16):
+                                                    if (VsensStringVar.get() >= 0 and VsensStringVar.get() <= 5):
+                                                        if (VRPStringVar.get() >= 150 and VRPStringVar.get() <= 500):
+                                                            checked = True
+                                                        else:
+                                                            errorMsg = "VRP must be between 150 and 500"
+                                                    else:
+                                                        errorMsg = "Senstivity must be between 0 and 5"
+                                                else:
+                                                    errorMsg = "Recovery Time must be between 2 and 16"
+                                            else:
+                                                errorMsg = "Response Factor must be between 1 and 16"
+                                        else:
+                                            errorMsg = "Reaction time must be between 10 and 50"
+                                    else:
+                                        errorMsg = "Activity Threshold has to be between 0-6 for V-LOW to V-HIGH"
+                                else:
+                                    errorMsg = "MSR has to be between 50 and 175"
+                            else:
+                                errorMsg = "VPW has to be between 1 and 30ms"
+                        else:
+                            errorMsg = "V amplitude has to be 0 or between 0.1 and 5"
+                    elif (mode == 'VOOR'):
+                        if (VampStringVar.get() == 0 or (VampStringVar.get() >= 0.1 and VampStringVar.get() <= 5)):
+                            if (VPWStringVar.get() >= 1 and VPWStringVar.get() <= 30):
+                                if (MSRStringVar.get() >= 50 and MSRStringVar.get() <= 175):
+                                    if (ActivityThreshStringVar.get() >= 0 and ActivityThreshStringVar.get() <= 6):
+                                        if (RxtimeStringVar.get() >= 10 and RxtimeStringVar.get() <= 50):
+                                            if (responseFactorStringVar.get() >= 1 and responseFactorStringVar.get() <= 16):
+                                                if (recovTimeStringVar.get() >= 2 and recovTimeStringVar.get() <= 16):
+                                                    checked = True
+                                                else:
+                                                    errorMsg = "Recovery Time must be between 2 and 16"
+                                            else:
+                                                errorMsg = "Response Factor must be between 1 and 16"
+                                        else:
+                                            errorMsg = "Reaction time must be between 10 and 50"
+                                    else:
+                                        errorMsg = "Activity Threshold has to be between 0-6 for V-LOW to V-HIGH"
+                                else:
+                                    errorMsg = "MSR has to be between 50 and 175"
+                            else:
+                                errorMsg = "VPW has to be between 1 and 30ms"
+                        else:
+                            errorMsg = "V amplitude has to be 0 or between 0.1 and 5"
                 else:
                     errorMsg = "URL has to be between 50 and 175 and bigger then LRL"
             else:
                 errorMsg = "LRL has to be between 30 and 175"
+
             if (checked == True):
                 if (mode == "AOO"):
                     # verify values code
@@ -376,6 +578,71 @@ class modeP(tk.Frame):
                         paramList.append(URLStringVar.get())
                         paramList.append(VampStringVar.get())
                         paramList.append(VPWStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "AOOR"):  # same as AOO
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(AampStringVar.get())
+                        paramList.append(APWStringVar.get())
+                        paramList.append(MSRStringVar.get())
+                        paramList.append(ActivityThreshStringVar.get())
+                        paramList.append(RxtimeStringVar.get())
+                        paramList.append(responseFactorStringVar.get())
+                        paramList.append(recovTimeStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "AAIR"):  # same as AOO
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(AampStringVar.get())
+                        paramList.append(APWStringVar.get())
+                        paramList.append(ARPStringVar.get())
+                        paramList.append(MSRStringVar.get())
+                        paramList.append(AsensStringVar.get())
+                        paramList.append(PVARPStringVar.get())
+                        paramList.append(ActivityThreshStringVar.get())
+                        paramList.append(RxtimeStringVar.get())
+                        paramList.append(responseFactorStringVar.get())
+                        paramList.append(recovTimeStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "VVIR"):  # same as AOO
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(VampStringVar.get())
+                        paramList.append(VPWStringVar.get())
+                        paramList.append(VRPStringVar.get())
+                        paramList.append(MSRStringVar.get())
+                        paramList.append(VsensStringVar.get())
+                        paramList.append(ActivityThreshStringVar.get())
+                        paramList.append(RxtimeStringVar.get())
+                        paramList.append(responseFactorStringVar.get())
+                        paramList.append(recovTimeStringVar.get())
+                    except:
+                        messagebox.showinfo(message="Inputs must be a number")
+                elif (mode == "VOOR"):  # same as AOO
+                    # verify values code
+                    try:
+                        paramList = []
+                        paramList.append(LRLStringVar.get())
+                        paramList.append(URLStringVar.get())
+                        paramList.append(VampStringVar.get())
+                        paramList.append(VPWStringVar.get())
+                        paramList.append(MSRStringVar.get())
+                        paramList.append(ActivityThreshStringVar.get())
+                        paramList.append(RxtimeStringVar.get())
+                        paramList.append(responseFactorStringVar.get())
+                        paramList.append(recovTimeStringVar.get())
                     except:
                         messagebox.showinfo(message="Inputs must be a number")
                 elif (mode == "VVI"):
@@ -452,10 +719,10 @@ class modeP(tk.Frame):
                     'Asens',
                     'Vsens',
                     'PVARP',
-                    'ActivityThresh',
-                    'Rxtime',
-                    'responseFactor',
-                    'recovTime']  # array of parameters
+                    'Activity Threshold',
+                    'Rx time',
+                    'Response Factor',
+                    'Recovery Time']  # array of parameters
         paramEntries = []  # entry box array for parameter
         paramInstructions = []  # entry box instructions for parameters
         emptyStringVar = tk.StringVar(self, "")  # empty StringVar
