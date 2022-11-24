@@ -1,3 +1,7 @@
+# import serial
+
+# ser = serial.Serial('COM5', 115200, timeout=10)
+
 connected = False  # initial value of connected- will change with serial com
 pmID = 341  # example pace maker ID from serial com- will store to db for next time
 previousId = 431  # will get from database
