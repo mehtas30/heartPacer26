@@ -53,8 +53,10 @@ from storeAttributes import getParams
 def isConnected():
     if sys.platform.startswith('win'):
         try:
-            frdm_port = "/dev/cu.usbmodem0000001234561"
-            print("connected")
+            frdm_port = "COM4"
+            with serial.Serial(frdm_port, 115200) as pacemaker:
+                connected = True
+                print("connected")
         except serial.serialutil.SerialException:
             connected = False  # initial value of connected- will change with serial com
             print("not connected")
@@ -63,7 +65,7 @@ def isConnected():
             frdm_port = "/dev/cu.usbmodem0000001234561"
             with serial.Serial(frdm_port, 115200) as pacemaker:
                 connected = True
-            print("connected")
+                print("connected")
         except serial.serialutil.SerialException:
             connected = False  # initial value of connected- will change with serial com
             print("not connected")
