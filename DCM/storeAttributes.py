@@ -122,6 +122,9 @@ def getParams(username, mode):  # gets the parameters and returns list of values
     elif (mode == "VVI"):  # gets specific parameters based on mode selected and username
         params = curs.execute('SELECT LRL,URL,VAMP,VPW,VRP,Vsens FROM userParams WHERE USER= :user', {
             'user': username})
+    elif (mode == "checkConn"):  # for checking connection
+        params = curs.execute('SELECT LRL,AAMP,APW,ASens,ARP,VAMP,VPW,Vsens,VRP,Rxtime,recovTime FROM userParams WHERE USER= :user', {
+            'user': username})
     else:
         print('mode doesnt exist')
         return []

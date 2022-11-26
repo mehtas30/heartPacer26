@@ -217,6 +217,7 @@ class modeP(tk.Frame):
         def setParam(mode):  # sets the parameters with option given to user based on mode selected (ONLY FOR DISPLAY SUBMIT IS BELOW)
             readButt.grid_remove()  # removes button to make room for entry boxes
             setButt.grid_remove()
+
             if (mode == 'AOO'):  # Aoo mode will only give option to change aoo related parameters
                 # changes entry variable to specific parameter variable
                 paramEntries[0].config(textvariable=LRLStringVar)
@@ -558,6 +559,11 @@ class modeP(tk.Frame):
             else:
                 errorMsg = "LRL has to be between 30 and 175"
 
+            checkComs = isConnected()
+            if (checkComs[0] == False):
+                checked = False
+                errorMsg = "No Device Connected"
+
             if (checked == True):
                 if (mode == "AOO"):
                     # verify values code
@@ -674,6 +680,10 @@ class modeP(tk.Frame):
                     print("something went wrong :(")
                 # sets parameters to SQL database
                 setParams(user, paramList, mode)
+                # sends to device
+                sendData([LRLStringVar.get(), AampStringVar.get(), APWStringVar.get(), AsensStringVar.get(
+                ), ARPStringVar.get(), VampStringVar.get(), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode])
+                messagebox.showinfo(message="Data sent to device")
                 # resets entry boxes
                 LRLStringVar.set("")
                 URLStringVar.set("")
@@ -773,21 +783,21 @@ class afterLogin(tk.Frame):  # page after login success
             elif (mode == "VVIR"):
                 controller.sharedUser["mode"].set("VVIR")
             controller.dispFrame("modeP")  # calls modeP page to front
+            # Connection display
+        connected = isConnected()[0]
+        different = isDifferent(str(controller.sharedUser["username"]))
 
         def refreshConnection():  # refresh connection for device connection and id checking- will be improved with serial comms
-            connected = True  # testing purposes change to true as simulated connection
-            different = True  # testing purposes change value
+            # connected = True  # testing purposes change to true as simulated connection
+            # different = True  # testing purposes change value
+            connected = isConnected()[0]
+            different = isDifferent(str(controller.sharedUser["username"]))
             connection.set("Connected" if connected else "Disconnected")
             # will show different device label if different ids- from serialCom.py
             if (different == True and connected == True):
                 showDifferent.grid(row=1, column=3)
             else:
                 showDifferent.grid_forget()  # removes different label from user view
-
-        def signOut():  # signs out user by going to welcome page and removing username history from shared variable
-            username.config(
-                textvariable=controller.sharedUser["username"].set(""))
-            controller.dispFrame("welcomeP")
 
         connection = tk.StringVar(
             self, "Connected" if connected else "Disconnected")  # connection stringVar that gets value from initial value of connected from serialCom.py
@@ -804,6 +814,12 @@ class afterLogin(tk.Frame):  # page after login success
         refreshButt = tk.Button(self, text="Check Connection", height=2,
                                 command=lambda: refreshConnection())  # user manually has to press refresh button for now
         refreshButt.grid(row=2, column=3)
+
+        def signOut():  # signs out user by going to welcome page and removing username history from shared variable
+            username.config(
+                textvariable=controller.sharedUser["username"].set(""))
+            controller.dispFrame("welcomeP")
+
         user = tk.Label(self, text="User:", fg='#F2BA49', bg=BGCOLOR,
                         justify='center', font="default, 25")  # user label on screen to display "user:"
         user.grid(row=0, column=2, pady=10, padx=150)
