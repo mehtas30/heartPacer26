@@ -57,16 +57,15 @@ def isConnected():
             print("connected")
         except serial.serialutil.SerialException:
             connected = False  # initial value of connected- will change with serial com
-            different = False
             print("not connected")
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         try:
             frdm_port = "/dev/cu.usbmodem0000001234561"
-            connected = True
+            with serial.Serial(frdm_port, 115200) as pacemaker:
+                connected = True
             print("connected")
         except serial.serialutil.SerialException:
             connected = False  # initial value of connected- will change with serial com
-            different = False
             print("not connected")
     return connected, frdm_port
 
@@ -75,7 +74,7 @@ def isDifferent(user):
     comInfo = isConnected()
     findConnection = comInfo[0]
     port = comInfo[1]
-    if (findConnection):
+    if (findConnection == True):
         print("checking different devices")
         Start = b'\x16'
         SYNC = b'\x22'
@@ -176,4 +175,5 @@ def readData():
             dataIn = pacemaker.read(15)
 
 
-hello = isConnected()
+hi = isDifferent("test")
+print(hi)
