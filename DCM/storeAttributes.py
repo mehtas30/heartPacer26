@@ -36,7 +36,7 @@ def createDB():  # create DB will create the database if it is not there otherwi
 def updateUser(username):  # creates new user with null parameter values
     dbConnection = sqlite3.connect('parameter.db')
     curs = dbConnection.cursor()
-    curs.execute('INSERT INTO userParams VALUES (:user,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)', {
+    curs.execute('INSERT INTO userParams VALUES (:user,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)', {
                  'user': username})  # sql insertion with dictionary to insert variable
     # data = curs.execute('SELECT * From userParams')
     # print('create \n')

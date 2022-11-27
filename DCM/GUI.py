@@ -684,9 +684,9 @@ class modeP(tk.Frame):
                 # sends to device
                 dataSend = [LRLStringVar.get(), AampStringVar.get(), APWStringVar.get(), AsensStringVar.get(), ARPStringVar.get(), VampStringVar.get(
                 ), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode]
-                for count, param in enumerate(dataSend):
-                    if (param == None):
-                        dataSend[count] = 0.0
+                # for count, param in enumerate(dataSend):
+                #     if (param == None or param == ""):
+                #         dataSend[count] = 0.0
                 sendData(dataSend)
                 messagebox.showinfo(message="Data sent to device")
                 # resets entry boxes
