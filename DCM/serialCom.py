@@ -188,6 +188,8 @@ def sendData(paramNative):
             Asensp = struct.pack("f", paramNative[3])
             Vsensp = struct.pack("f", paramNative[3])
             modep = struct.pack("f", 2)
+            Signal_set = Start + Fn_set + Vampp+vpwp + \
+                arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
 #     switch_time = struct.pack("H", 500)  # Integer 2 byte
         with serial.Serial(port, 115200) as pacemaker:
             pacemaker.write(Signal_set)

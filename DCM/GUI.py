@@ -73,10 +73,10 @@ class graphAP(tk.Frame):
         #     self, text="Back", width=5, height=2, command=lambda: goBack())
         # back button calls backPressed
         #backButt.grid(row=0, column=0, pady=5)
-        while contGraph:
-            data = readData()
-            Av = data[13]
-            graphA(Av)
+        # while contGraph:
+        #     data = readData()
+        #     Av = data[13]
+        #     graphA(Av)
 
 
 class graphVP(tk.Frame):
@@ -88,10 +88,10 @@ class graphVP(tk.Frame):
         #                      width=5, height=2, command=lambda: contGraph=False)
         # # back button calls backPressed
         # backButt.grid(row=0, column=0, pady=5)
-        while contGraph:
-            data = readData()
-            Vv = data[14]
-            graphV(Vv)
+        # while contGraph:
+        #     data = readData()
+        #     Vv = data[14]
+        #     graphV(Vv)
 
 
 class graphBP(tk.Frame):
@@ -103,11 +103,11 @@ class graphBP(tk.Frame):
         #                      width=5, height=2, command=lambda: contGraph=False)
         # # back button calls backPressed
         # backButt.grid(row=0, column=0, pady=5)
-        while contGraph:
-            data = readData()
-            Av = data[13]
-            Vv = data[14]
-            graphB(Av, Vv)
+        # while contGraph:
+        #     data = readData()
+        #     Av = data[13]
+        #     Vv = data[14]
+        #     graphB(Av, Vv)
 
 
 class modeP(tk.Frame):
@@ -609,7 +609,7 @@ class modeP(tk.Frame):
             # checkComs = isConnected()
             # if (checkComs[0] == False):
             #     checked = False
-            #     errorMsg = "No Device Connected"
+            #     errorMsg = "No Device Connected"s
 
             if (checked == True):
                 if (mode == "AOO"):
@@ -735,7 +735,6 @@ class modeP(tk.Frame):
                 #     if (param == None or param == ""):
                 #         dataSend[count] = 0.0
                 sendData(dataSend)
-                messagebox.showinfo(message="Data sent to device")
                 # resets entry boxes
                 LRLStringVar.set(0.0)
                 URLStringVar.set(0.0)

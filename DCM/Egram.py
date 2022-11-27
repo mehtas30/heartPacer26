@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import serial
-
 
 # def Egram(serialRead=None):
 
