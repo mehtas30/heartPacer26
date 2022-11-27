@@ -86,33 +86,39 @@ def isDifferent(user):
         # comaparing pacemaker data with dcm data
         with serial.Serial(port, 115200) as pacemaker:
             pacemaker.write(Signal_echo)
-            dataIn = pacemaker.read(15)
+            dataIn = pacemaker.read(71)
+            unpackedDataIn = []
+            unpackedDataIn.append(struct.unpack("f", dataIn[3:10])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[11:18])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[19:26])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[27:34])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[35:42])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[43:50])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[51:58])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[59:66])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[67:68])[0])
             currentParams = getParams(user, "checkConn")
             if (currentParams == None or dataIn == None):
                 return True
-            if (dataIn[7] != currentParams[4]):  # arp
+            if (dataIn[0] == currentParams[2] or dataIn[0] == currentParams[6]):  # amp
+                pass
+            else:
                 return True
-            if (dataIn[5] != currentParams[5]):  # apw
+            if (dataIn[1] == currentParams[3] or dataIn[1] == currentParams[7]):  # pw
+                pass
+            else:
                 return True
-            if (dataIn[6] != currentParams[6]):  # asens
+            if (dataIn[2] != currentParams[5]):  # arp
                 return True
-            if (dataIn[4] != currentParams[4]):  # aamp
+            if (dataIn[3] != currentParams[7]):  # vrp
                 return True
-            if (dataIn[3] != currentParams[3]):  # lrl
+            if (dataIn[4] != currentParams[0]):  # lrl
                 return True
-            if (dataIn[11] != currentParams[11]):  # vrp
+            if (dataIn[5] != currentParams[1]):  # URL
                 return True
-            if (dataIn[9] != currentParams[9]):  # vpw
+            if (dataIn[6] != currentParams[4]):  # Asens
                 return True
-            if (dataIn[10] != currentParams[10]):  # vsens
-                return True
-            if (dataIn[8] != currentParams[8]):  # vamp
-                return True
-            if (dataIn[12] != currentParams[12]):  # reaction
-                return True
-            if (dataIn[13] != currentParams[13]):  # recovery
-                return True
-            if (dataIn[14] != currentParams[14]):  # mode
+            if (dataIn[7] != currentParams[8]):  # Vsens
                 return True
         return False
 #         data = pacemaker.read(9)
@@ -136,29 +142,53 @@ def sendData(paramNative):
  #     SYNC = b'\x22'
         Fn_set = b'\x55'
         print(paramNative)
-        LRLp = struct.pack("f", paramNative[0])
-        Aampp = struct.pack("f", paramNative[1])
-        apwp = struct.pack("f", paramNative[2])
-        Asensp = struct.pack("f", paramNative[3])
-        arpp = struct.pack("f", paramNative[4])
-        Vampp = struct.pack("f", paramNative[5])
-        vpwp = struct.pack("f", paramNative[2])
-        Vsensp = struct.pack("f", paramNative[3])
-        vrpp = struct.pack("f", paramNative[4])
-        Rxp = struct.pack("f", paramNative[9])
-        recovp = struct.pack("f", paramNative[10])
         if (paramNative[11] == "AOO"):
-            modep = struct.pack("B", 1)
+            Aampp = struct.pack("f", paramNative[1])
+            apwp = struct.pack("f", paramNative[2])
+            arpp = struct.pack("f", paramNative[4])
+            vrpp = struct.pack("f", paramNative[4])
+            LRLp = struct.pack("f", paramNative[0])
+            URLp = struct.pack("f", paramNative[12])
+            Asensp = struct.pack("f", paramNative[3])
+            Vsensp = struct.pack("f", paramNative[3])
+            modep = struct.pack("f", 1)
+            Signal_set = Start + Fn_set + Aampp+apwp + \
+                arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "VVI"):
-            modep = struct.pack("B", 4)
+            Vampp = struct.pack("f", paramNative[5])
+            vpwp = struct.pack("f", paramNative[6])
+            arpp = struct.pack("f", paramNative[4])
+            vrpp = struct.pack("f", paramNative[4])
+            LRLp = struct.pack("f", paramNative[0])
+            URLp = struct.pack("f", paramNative[12])
+            Asensp = struct.pack("f", paramNative[3])
+            Vsensp = struct.pack("f", paramNative[3])
+            modep = struct.pack("f", 4)
+            Signal_set = Start + Fn_set + Vampp+vpwp + \
+                arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "AAI"):
-            modep = struct.pack("B", 3)
+            Aampp = struct.pack("f", paramNative[1])
+            apwp = struct.pack("f", paramNative[2])
+            arpp = struct.pack("f", paramNative[4])
+            vrpp = struct.pack("f", paramNative[4])
+            LRLp = struct.pack("f", paramNative[0])
+            URLp = struct.pack("f", paramNative[12])
+            Asensp = struct.pack("f", paramNative[3])
+            Vsensp = struct.pack("f", paramNative[3])
+            modep = struct.pack("f", 3)
+            Signal_set = Start + Fn_set + Aampp+apwp + \
+                arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "VOO"):
-            modep = struct.pack("B", 2)
+            Vampp = struct.pack("f", paramNative[5])
+            vpwp = struct.pack("f", paramNative[6])
+            arpp = struct.pack("f", paramNative[4])
+            vrpp = struct.pack("f", paramNative[4])
+            LRLp = struct.pack("f", paramNative[0])
+            URLp = struct.pack("f", paramNative[12])
+            Asensp = struct.pack("f", paramNative[3])
+            Vsensp = struct.pack("f", paramNative[3])
+            modep = struct.pack("f", 2)
 #     switch_time = struct.pack("H", 500)  # Integer 2 byte
-
-        Signal_set = Start + Fn_set + LRLp + Aampp+apwp + \
-            Asensp+arpp+Vampp+vpwp+Vsensp+vrpp+Rxp+recovp+modep
         with serial.Serial(port, 115200) as pacemaker:
             pacemaker.write(Signal_set)
     else:
@@ -181,6 +211,9 @@ def readData():
         with serial.Serial(port, 115200) as pacemaker:
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
+            return dataIn
+    else:
+        return None
 
 
 def testSet():
@@ -230,6 +263,6 @@ def setRx():
         print(dataIn)
 
 
-testSet()
+# testSet()
 
 # setRx() uncoment to test gui recieve

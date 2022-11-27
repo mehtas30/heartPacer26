@@ -5,6 +5,7 @@ from tkinter.tix import COLUMN
 from options import *
 from storeAttributes import *
 from serialCom import *
+from Egram import *
 BGCOLOR = '#800000'  # background color of gui-maroon
 # Runs gui and controls program
 
@@ -25,7 +26,7 @@ class gui (tk.Tk):  # tk.TK is root
         container.grid_columnconfigure(0, weight=1)
         self.pageInfo = {}  # empty dictionary for page name and object
         # sets properties of frame windows
-        for page in (welcomeP, loginP, signupP, deleteP, afterLogin, modeP):
+        for page in (welcomeP, loginP, signupP, deleteP, afterLogin, modeP, graphAP, graphBP, graphVP):
             pageName = page.__name__  # magic  method to get object name -pythons cool
             # parent as container for frame, with self as controller to use function in gui
             frame = page(parent=container, controller=self)
@@ -61,6 +62,52 @@ class welcomeP(tk.Frame):  # Frame is parent
         loginButt.pack(pady=5)
         signButt.pack(pady=5)
         deleteButt.pack(pady=5)
+
+
+class graphAP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+        contGraph = True
+        # backButt = tk.Button(
+        #     self, text="Back", width=5, height=2, command=lambda: goBack())
+        # back button calls backPressed
+        #backButt.grid(row=0, column=0, pady=5)
+        while contGraph:
+            data = readData()
+            Av = data[13]
+            graphA(Av)
+
+
+class graphVP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+        contGraph = True
+        # backButt = tk.Button(self, text="Back",
+        #                      width=5, height=2, command=lambda: contGraph=False)
+        # # back button calls backPressed
+        # backButt.grid(row=0, column=0, pady=5)
+        while contGraph:
+            data = readData()
+            Vv = data[14]
+            graphV(Vv)
+
+
+class graphBP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+        contGraph = True
+        # backButt = tk.Button(self, text="Back",
+        #                      width=5, height=2, command=lambda: contGraph=False)
+        # # back button calls backPressed
+        # backButt.grid(row=0, column=0, pady=5)
+        while contGraph:
+            data = readData()
+            Av = data[13]
+            Vv = data[14]
+            graphB(Av, Vv)
 
 
 class modeP(tk.Frame):
@@ -683,7 +730,7 @@ class modeP(tk.Frame):
                 setParams(user, paramList, mode)
                 # sends to device
                 dataSend = [LRLStringVar.get(), AampStringVar.get(), APWStringVar.get(), AsensStringVar.get(), ARPStringVar.get(), VampStringVar.get(
-                ), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode]
+                ), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode, URLStringVar.get()]
                 # for count, param in enumerate(dataSend):
                 #     if (param == None or param == ""):
                 #         dataSend[count] = 0.0
@@ -831,6 +878,27 @@ class afterLogin(tk.Frame):  # page after login success
         username = tk.Label(self, textvariable=controller.sharedUser["username"], fg='#F2BA49', bg=BGCOLOR,
                             justify='center', font="default, 25")  # displays username on screen
         username.grid(row=1, column=2, padx=150)
+        # graph buttons and method
+
+        def gMode(gType):
+            if (gType == "A"):
+                controller.dispFrame("grahpAP")
+            if (gType == "V"):
+                controller.dispFrame("grahVP")
+            if (gType == "B"):
+                controller.dispFrame("grahBP")
+
+        gAButt = tk.Button(self, text="Atrium Graph",
+                           width=7, height=2, command=lambda: gMode("A"))  # signout button calls signOut
+        gAButt.grid(row=2, column=2, pady=5)
+
+        gVButt = tk.Button(self, text="Ventrical Graph",
+                           width=7, height=2, command=lambda: gMode("V"))  # signout button calls signOut
+        gVButt.grid(row=3, column=2, pady=5)
+
+        gBButt = tk.Button(self, text="Both Graphs",
+                           width=7, height=2, command=lambda: gMode("B"))  # signout button calls signOut
+        gBButt.grid(row=4, column=2, pady=5)
         # back button
         soButt = tk.Button(self, text="Sign Out",
                            width=5, height=2, command=lambda: signOut())  # signout button calls signOut

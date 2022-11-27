@@ -123,7 +123,7 @@ def getParams(username, mode):  # gets the parameters and returns list of values
         params = curs.execute('SELECT LRL,URL,VAMP,VPW,VRP,Vsens FROM userParams WHERE USER= :user', {
             'user': username})
     elif (mode == "checkConn"):  # for checking connection
-        params = curs.execute('SELECT LRL,AAMP,APW,ASens,ARP,VAMP,VPW,Vsens,VRP,Rxtime,recovTime FROM userParams WHERE USER= :user', {
+        params = curs.execute('SELECT LRL,URL, AAMP,APW,ASens,ARP,VAMP,VPW,Vsens,VRP,Rxtime,recovTime FROM userParams WHERE USER= :user', {
             'user': username})
     else:
         print('mode doesnt exist')
