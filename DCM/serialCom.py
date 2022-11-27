@@ -1,6 +1,5 @@
 
 
-
 # if connected change- reload gui with tk.after
 # Serial communication baud rate shall be 57600
 

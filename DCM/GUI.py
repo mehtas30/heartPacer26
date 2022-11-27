@@ -68,22 +68,22 @@ class modeP(tk.Frame):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
         # DoubleVar is needed for tk labels/entries to be able to take in variable as args and too pass to other frames
-        LRLStringVar = tk.DoubleVar(self, "")
-        URLStringVar = tk.DoubleVar(self, "")
-        AampStringVar = tk.DoubleVar(self, "")
-        APWStringVar = tk.DoubleVar(self, "")
-        VampStringVar = tk.DoubleVar(self, "")
-        VPWStringVar = tk.DoubleVar(self, "")
-        ARPStringVar = tk.DoubleVar(self, "")
-        VRPStringVar = tk.DoubleVar(self, "")
-        MSRStringVar = tk.DoubleVar(self, "")
-        AsensStringVar = tk.DoubleVar(self, "")
-        VsensStringVar = tk.DoubleVar(self, "")
-        PVARPStringVar = tk.DoubleVar(self, "")
-        ActivityThreshStringVar = tk.DoubleVar(self, "")
-        RxtimeStringVar = tk.DoubleVar(self, "")
-        responseFactorStringVar = tk.DoubleVar(self, "")
-        recovTimeStringVar = tk.DoubleVar(self, "")
+        LRLStringVar = tk.DoubleVar(self, 0.0)
+        URLStringVar = tk.DoubleVar(self, 0.0)
+        AampStringVar = tk.DoubleVar(self, 0.0)
+        APWStringVar = tk.DoubleVar(self, 0.0)
+        VampStringVar = tk.DoubleVar(self, 0.0)
+        VPWStringVar = tk.DoubleVar(self, 0.0)
+        ARPStringVar = tk.DoubleVar(self, 0.0)
+        VRPStringVar = tk.DoubleVar(self, 0.0)
+        MSRStringVar = tk.DoubleVar(self, 0.0)
+        AsensStringVar = tk.DoubleVar(self, 0.0)
+        VsensStringVar = tk.DoubleVar(self, 0.0)
+        PVARPStringVar = tk.DoubleVar(self, 0.0)
+        ActivityThreshStringVar = tk.DoubleVar(self, 0.0)
+        RxtimeStringVar = tk.DoubleVar(self, 0.0)
+        responseFactorStringVar = tk.DoubleVar(self, 0.0)
+        recovTimeStringVar = tk.DoubleVar(self, 0.0)
         # to be set/displayed
 
         # displaying parameters by getting them from SQL db user/mode needed for qry
@@ -559,10 +559,10 @@ class modeP(tk.Frame):
             else:
                 errorMsg = "LRL has to be between 30 and 175"
 
-            checkComs = isConnected()
-            if (checkComs[0] == False):
-                checked = False
-                errorMsg = "No Device Connected"
+            # checkComs = isConnected()
+            # if (checkComs[0] == False):
+            #     checked = False
+            #     errorMsg = "No Device Connected"
 
             if (checked == True):
                 if (mode == "AOO"):
@@ -690,22 +690,22 @@ class modeP(tk.Frame):
                 sendData(dataSend)
                 messagebox.showinfo(message="Data sent to device")
                 # resets entry boxes
-                LRLStringVar.set("")
-                URLStringVar.set("")
-                AampStringVar.set("")
-                APWStringVar.set("")
-                VampStringVar.set("")
-                VPWStringVar.set("")
-                ARPStringVar.set("")
-                VRPStringVar.set("")
-                MSRStringVar.set("")
-                AsensStringVar.set("")
-                VsensStringVar.set("")
-                PVARPStringVar.set("")
-                ActivityThreshStringVar.set("")
-                RxtimeStringVar.set("")
-                responseFactorStringVar.set("")
-                recovTimeStringVar.set("")
+                LRLStringVar.set(0.0)
+                URLStringVar.set(0.0)
+                AampStringVar.set(0.0)
+                APWStringVar.set(0.0)
+                VampStringVar.set(0.0)
+                VPWStringVar.set(0.0)
+                ARPStringVar.set(0.0)
+                VRPStringVar.set(0.0)
+                MSRStringVar.set(0.0)
+                AsensStringVar.set(0.0)
+                VsensStringVar.set(0.0)
+                PVARPStringVar.set(0.0)
+                ActivityThreshStringVar.set(0.0)
+                RxtimeStringVar.set(0.0)
+                responseFactorStringVar.set(0.0)
+                recovTimeStringVar.set(0.0)
                 # outputs to user success
                 messagebox.showinfo(message="Parameters Set")
             else:
