@@ -88,29 +88,32 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
             currentParams = getParams(user, "checkConn")
-            if (currentParams == [] or dataIn == None):
+            print(dataIn)
+            if (currentParams == None or dataIn == None):
                 return True
-            if (struct.unpack("B", dataIn[0:1])[0] != currentParams[4]):  # arp
+            if (dataIn[7] != currentParams[4]):  # arp
                 return True
-            if (dataIn[2] != currentParams[2]):  # apw
+            if (dataIn[5] != currentParams[5]):  # apw
                 return True
-            if (dataIn[3] != currentParams[3]):  # asens
+            if (dataIn[6] != currentParams[6]):  # asens
                 return True
-            if (dataIn[4] != currentParams[1]):  # aamp
+            if (dataIn[4] != currentParams[4]):  # aamp
                 return True
-            if (dataIn[5] != currentParams[0]):  # lrl
+            if (dataIn[3] != currentParams[3]):  # lrl
                 return True
-            if (dataIn[7] != currentParams[9]):
+            if (dataIn[11] != currentParams[11]): # vrp
                 return True
-            if (struct.unpack("B", dataIn[8:9])[0] != currentParams[10]):
+            if (dataIn[9] != currentParams[9]): #vpw
                 return True
-            if (dataIn[10] != currentParams[5]):
+            if (dataIn[10] != currentParams[10]): #vsens
                 return True
-            if (dataIn[11] != currentParams[6]):
+            if (dataIn[8] != currentParams[8]): #vamp
                 return True
-            if (struct.unpack("B", dataIn[12:13])[0] != currentParams[8]):
+            if (dataIn[12] != currentParams[12]): #reaction
                 return True
-            if (dataIn[14] != currentParams[7]):
+            if (dataIn[13] != currentParams[13]): #recovery
+                return True
+            if (dataIn[14] != currentParams[14]): #mode
                 return True
         return False
 #         data = pacemaker.read(9)
