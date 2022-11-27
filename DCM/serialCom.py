@@ -1,5 +1,6 @@
 
 
+
 # if connected change- reload gui with tk.after
 # Serial communication baud rate shall be 57600
 
@@ -88,10 +89,6 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
             currentParams = getParams(user, "checkConn")
-<<<<<<< HEAD
-=======
-            print(dataIn)
->>>>>>> ee2da839dbe808172d40961d2b32b51e35cf269e
             if (currentParams == None or dataIn == None):
                 return True
             if (dataIn[7] != currentParams[4]):  # arp
@@ -104,19 +101,19 @@ def isDifferent(user):
                 return True
             if (dataIn[3] != currentParams[3]):  # lrl
                 return True
-            if (dataIn[11] != currentParams[11]): # vrp
+            if (dataIn[11] != currentParams[11]):  # vrp
                 return True
-            if (dataIn[9] != currentParams[9]): #vpw
+            if (dataIn[9] != currentParams[9]):  # vpw
                 return True
-            if (dataIn[10] != currentParams[10]): #vsens
+            if (dataIn[10] != currentParams[10]):  # vsens
                 return True
-            if (dataIn[8] != currentParams[8]): #vamp
+            if (dataIn[8] != currentParams[8]):  # vamp
                 return True
-            if (dataIn[12] != currentParams[12]): #reaction
+            if (dataIn[12] != currentParams[12]):  # reaction
                 return True
-            if (dataIn[13] != currentParams[13]): #recovery
+            if (dataIn[13] != currentParams[13]):  # recovery
                 return True
-            if (dataIn[14] != currentParams[14]): #mode
+            if (dataIn[14] != currentParams[14]):  # mode
                 return True
         return False
 #         data = pacemaker.read(9)
