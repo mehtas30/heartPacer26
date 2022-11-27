@@ -128,7 +128,7 @@ def isDifferent(user):
 def sendData(paramNative):
     comInfo = isConnected()
     findConnection = comInfo[0]
-    port = isConnected[1]
+    port = comInfo[1]
     if (findConnection):
         # send data
         print("sending data")
