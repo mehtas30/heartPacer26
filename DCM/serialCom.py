@@ -135,6 +135,7 @@ def sendData(paramNative):
         Start = b'\x16'
  #     SYNC = b'\x22'
         Fn_set = b'\x55'
+        print(paramNative)
         LRLp = struct.pack("f", paramNative[0])
         Aampp = struct.pack("f", paramNative[1])
         apwp = struct.pack("f", paramNative[2])
@@ -162,6 +163,7 @@ def sendData(paramNative):
             pacemaker.write(Signal_set)
     else:
         print("not connected")
+        # print(paramNative)
 
 
 def readData():
@@ -181,5 +183,53 @@ def readData():
             dataIn = pacemaker.read(15)
 
 
-hi = isDifferent("test")
-print(hi)
+def testSet():
+    comInfo = isConnected()
+    findConnection = comInfo[0]
+    port = comInfo[1]
+    if (findConnection):
+        # send data
+        print("sending data")
+        Start = b'\x16'
+ #     SYNC = b'\x22'
+        Fn_set = b'\x55'
+        LRLp = struct.pack("f", 35)
+        Aampp = struct.pack("f", 1)
+        apwp = struct.pack("f", 3)
+        Asensp = struct.pack("f", 3)
+        arpp = struct.pack("f", 3)
+        Vampp = struct.pack("f", 0)
+        vpwp = struct.pack("f", 0)
+        Vsensp = struct.pack("f", 0)
+        vrpp = struct.pack("f", 0)
+        Rxp = struct.pack("f", 0)
+        recovp = struct.pack("f", 0)
+        modep = struct.pack("B", 1)
+#     switch_time = struct.pack("H", 500)  # Integer 2 byte
+        Signal_set = Start + Fn_set + LRLp + Aampp+apwp + \
+            Asensp+arpp+Vampp+vpwp+Vsensp+vrpp+Rxp+recovp+modep
+        with serial.Serial(port, 115200) as pacemaker:
+            pacemaker.write(Signal_set)
+
+    else:
+        print("not connected")
+        # print(paramNative)
+
+
+def setRx():
+    print("checking different devices")
+    Start = b'\x16'
+    SYNC = b'\x22'
+    Signal_echo = Start + SYNC
+    for i in range(15):
+        Signal_echo = Signal_echo+struct.pack("B", 0)
+    # comaparing pacemaker data with dcm data
+    with serial.Serial("Com4", 115200) as pacemaker:
+        pacemaker.write(Signal_echo)
+        dataIn = pacemaker.read(15)
+        print(dataIn)
+
+
+testSet()
+
+# setRx() uncoment to test gui recieve
