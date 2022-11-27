@@ -88,7 +88,7 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
             currentParams = getParams(user, "checkConn")
-            if (struct.unpack("B", dataIn[0:1])[0] != currentParams[4]):  # arp
+            if (struct.unpack("B", dataIn[0:1])[0]!= currentParams[4]):  # arp
                 return False
             if (dataIn[2] != currentParams[2]):  # apw
                 return False
