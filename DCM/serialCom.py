@@ -88,29 +88,31 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
             currentParams = getParams(user, "checkConn")
-            if (struct.unpack("B", dataIn[0:1])[0]!= currentParams[4]):  # arp
-                return False
+            if (currentParams == [] or dataIn == None):
+                return True
+            if (struct.unpack("B", dataIn[0:1])[0] != currentParams[4]):  # arp
+                return True
             if (dataIn[2] != currentParams[2]):  # apw
-                return False
+                return True
             if (dataIn[3] != currentParams[3]):  # asens
-                return False
+                return True
             if (dataIn[4] != currentParams[1]):  # aamp
-                return False
+                return True
             if (dataIn[5] != currentParams[0]):  # lrl
-                return False
+                return True
             if (dataIn[7] != currentParams[9]):
-                return False
+                return True
             if (struct.unpack("B", dataIn[8:9])[0] != currentParams[10]):
-                return False
+                return True
             if (dataIn[10] != currentParams[5]):
-                return False
+                return True
             if (dataIn[11] != currentParams[6]):
-                return False
+                return True
             if (struct.unpack("B", dataIn[12:13])[0] != currentParams[8]):
-                return False
+                return True
             if (dataIn[14] != currentParams[7]):
-                return False
-        return True
+                return True
+        return False
 #         data = pacemaker.read(9)
 #         red_rev = data[0]
 #         green_rev = data[1]
