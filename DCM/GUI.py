@@ -574,6 +574,7 @@ class modeP(tk.Frame):
                         paramList.append(URLStringVar.get())
                         paramList.append(AampStringVar.get())
                         paramList.append(APWStringVar.get())
+
                     except:  # if input is not a number- will output message to user and not submit
                         messagebox.showinfo(message="Inputs must be a number")
                 elif (mode == "VOO"):  # same as AOO
@@ -681,8 +682,12 @@ class modeP(tk.Frame):
                 # sets parameters to SQL database
                 setParams(user, paramList, mode)
                 # sends to device
-                sendData([LRLStringVar.get(), AampStringVar.get(), APWStringVar.get(), AsensStringVar.get(
-                ), ARPStringVar.get(), VampStringVar.get(), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode])
+                dataSend = [LRLStringVar.get(), AampStringVar.get(), APWStringVar.get(), AsensStringVar.get(), ARPStringVar.get(), VampStringVar.get(
+                ), VPWStringVar.get(), VsensStringVar.get(), VRPStringVar.get(), RxtimeStringVar.get(), recovTimeStringVar.get(), mode]
+                for count, param in enumerate(dataSend):
+                    if (param == None):
+                        dataSend[count] = 0.0
+                sendData(dataSend)
                 messagebox.showinfo(message="Data sent to device")
                 # resets entry boxes
                 LRLStringVar.set("")
