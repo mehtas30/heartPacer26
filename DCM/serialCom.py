@@ -88,15 +88,15 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(71)
             unpackedDataIn = []
-            unpackedDataIn.append(struct.unpack("f", dataIn[3:10])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[11:18])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[19:26])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[27:34])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[35:42])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[43:50])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[51:58])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[59:66])[0])
-            unpackedDataIn.append(struct.unpack("f", dataIn[67:68])[0])
+            unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0]) #ampl
+            unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0]) #pw
+            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #atr_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#vent_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#lrl
+            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#url
+            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#atr_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#mode
             currentParams = getParams(user, "checkConn")
             if (currentParams == None or dataIn == None):
                 return True
