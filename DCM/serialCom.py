@@ -49,6 +49,11 @@ from storeAttributes import getParams
 #     print("switch_time = ", switch_rev)
 ###
 
+def endian_check():
+    if sys.byteorder == "little":
+        return True
+    else:
+        return False
 
 def isConnected():
     if sys.platform.startswith('win'):
@@ -88,37 +93,38 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(71)
             unpackedDataIn = []
-            unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0]) #ampl
-            unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0]) #pw
-            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #atr_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#vent_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#lrl
-            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#url
-            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#atr_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0]) #lrl
+            unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0]) #url
+            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #ampl            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#vent_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#pw
+            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#atr_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#vent_sen
             unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#mode
+            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#atr_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[36:40])[0])#vent_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[40:44])[0])#mode
             currentParams = getParams(user, "checkConn")
             if (currentParams == None or dataIn == None):
                 return True
-            if (dataIn[0] == currentParams[2] or dataIn[0] == currentParams[6]):  # amp
+            if (dataIn[2] == currentParams[2] or dataIn[2] == currentParams[6]):  # amp
                 pass
             else:
                 return True
-            if (dataIn[1] == currentParams[3] or dataIn[1] == currentParams[7]):  # pw
+            if (dataIn[3] == currentParams[3] or dataIn[3] == currentParams[7]):  # pw
                 pass
             else:
                 return True
-            if (dataIn[2] != currentParams[5]):  # arp
+            if (dataIn[6] != currentParams[5]):  # arp
                 return True
-            if (dataIn[3] != currentParams[7]):  # vrp
+            if (dataIn[7] != currentParams[7]):  # vrp
                 return True
-            if (dataIn[4] != currentParams[0]):  # lrl
+            if (dataIn[0] != currentParams[0]):  # lrl
                 return True
-            if (dataIn[5] != currentParams[1]):  # URL
+            if (dataIn[1] != currentParams[1]):  # URL
                 return True
-            if (dataIn[6] != currentParams[4]):  # Asens
+            if (dataIn[4] != currentParams[4]):  # Asens
                 return True
-            if (dataIn[7] != currentParams[8]):  # Vsens
+            if (dataIn[5] != currentParams[8]):  # Vsens
                 return True
         return False
 #         data = pacemaker.read(9)
@@ -139,7 +145,7 @@ def sendData(paramNative):
         # send data
         print("sending data")
         Start = b'\x16'
- #     SYNC = b'\x22'
+        SYNC = b'\x22'
         Fn_set = b'\x55'
         print(paramNative)
         if (paramNative[11] == "AOO"):
@@ -196,7 +202,7 @@ def sendData(paramNative):
     else:
         print("not connected")
         # print(paramNative)
-
+    print(Signal_set)
 
 def readData():
     comInfo = isConnected()
