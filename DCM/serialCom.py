@@ -103,27 +103,28 @@ def isDifferent(user):
             unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_ref
             unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#mode
             currentParams = getParams(user, "checkConn")
+            #print(unpackedDataIn)
             if (currentParams == None or dataIn == None):
                 return True
-            if (dataIn[2] == currentParams[2] or dataIn[2] == currentParams[6]):  # amp
+            if (unpackedDataIn[2] == currentParams[2] or unpackedDataIn[2] == currentParams[6]):  # amp
                 pass
             else:
                 return True
-            if (dataIn[3] == currentParams[3] or dataIn[3] == currentParams[7]):  # pw
+            if (unpackedDataIn[3] == currentParams[3] or unpackedDataIn[3] == currentParams[7]):  # pw
                 pass
             else:
                 return True
-            if (dataIn[6] != currentParams[5]):  # arp
+            if (unpackedDataIn[6] != currentParams[5]):  # arp
                 return True
-            if (dataIn[7] != currentParams[7]):  # vrp
+            if (unpackedDataIn[7] != currentParams[7]):  # vrp
                 return True
-            if (dataIn[0] != currentParams[0]):  # lrl
+            if (unpackedDataIn[0] != currentParams[0]):  # lrl
                 return True
-            if (dataIn[1] != currentParams[1]):  # URL
+            if (unpackedDataIn[1] != currentParams[1]):  # URL
                 return True
             if (dataIn[4] != currentParams[4]):  # Asens
                 return True
-            if (dataIn[5] != currentParams[8]):  # Vsens
+            if (unpackedDataIn[5] != currentParams[8]):  # Vsens
                 return True
         return False
 #         data = pacemaker.read(9)
@@ -148,15 +149,37 @@ def sendData(paramNative):
         Fn_set = b'\x55'
         print(paramNative)
         if (paramNative[11] == "AOO"):
-            Aampp = struct.pack("f", paramNative[1])
-            apwp = struct.pack("f", paramNative[2])
-            arpp = struct.pack("f", paramNative[4])
-            vrpp = struct.pack("f", paramNative[4])
-            LRLp = struct.pack("f", paramNative[0])
-            URLp = struct.pack("f", paramNative[12])
-            Asensp = struct.pack("f", paramNative[3])
-            Vsensp = struct.pack("f", paramNative[3])
-            modep = struct.pack("f", 1)
+            if(endian_check()==True):
+                print('little endian')
+                Aampp = struct.pack("<d", float(paramNative[1]))
+                apwp = struct.pack("<d", float(paramNative[2]))
+                arpp = struct.pack("<d", float(paramNative[4]))
+                vrpp = struct.pack("<d", float(paramNative[4]))
+                LRLp = struct.pack("<d", float(paramNative[0]))
+                URLp = struct.pack("<d", float(paramNative[12]))
+                Asensp = struct.pack("<d", float(paramNative[3]))
+                Vsensp = struct.pack("<d", float(paramNative[3]))
+                modep = struct.pack("d", 1)
+##                print(Aampp)
+##                print(apwp)
+##                print(arpp)
+##                print(vrpp)
+##                print(LRLp)
+##                print(URLp)
+##                print(Asensp)
+##                print(Vsensp)
+                print(modep)
+            else:
+                print('big endian')
+                Aampp = struct.pack(">f", float(paramNative[1]))
+                apwp = struct.pack(">f", float(paramNative[2]))
+                arpp = struct.pack(">f", float(paramNative[4]))
+                vrpp = struct.pack(">f", float(paramNative[4]))
+                LRLp = struct.pack(">f", float(paramNative[0]))
+                URLp = struct.pack(">f", float(paramNative[12]))
+                Asensp = struct.pack(">f", float(paramNative[3]))
+                Vsensp = struct.pack(">f", float(paramNative[3]))
+                modep = struct.pack("f", 1)
             Signal_set = Start + Fn_set + Aampp+apwp + \
                 arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "VVI"):
