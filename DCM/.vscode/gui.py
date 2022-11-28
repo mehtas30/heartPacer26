@@ -101,22 +101,21 @@ class graphAP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        graph("A")
+        graphA()
 
 
 class graphVP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        contGraph = True
-        graph("V")
+        graphV()
 
 
 class graphBP(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BGCOLOR)
         self.controller = controller
-        graph("B")
+        graphB()
 
 
 class modeP(tk.Frame):
@@ -1181,26 +1180,30 @@ class afterLogin(tk.Frame):  # page after login success
         username.grid(row=1, column=2, padx=150)
         # graph buttons and method
 
-        def gMode(gType):
-            if gType == "A":
-                controller.dispFrame("grahpAP")
-            if gType == "V":
-                controller.dispFrame("grahVP")
-            if gType == "B":
-                controller.dispFrame("grahBP")
-
         gAButt = tk.Button(
-            self, text="Atrium Graph", width=7, height=2, command=lambda: gMode("A")
+            self,
+            text="Atrium Graph",
+            width=7,
+            height=2,
+            command=lambda: controller.dispFrame("graphAP"),
         )  # signout button calls signOut
         gAButt.grid(row=2, column=2, pady=5)
 
         gVButt = tk.Button(
-            self, text="Ventrical Graph", width=7, height=2, command=lambda: gMode("V")
+            self,
+            text="Ventrical Graph",
+            width=7,
+            height=2,
+            command=lambda: controller.dispFrame("graphVP"),
         )  # signout button calls signOut
         gVButt.grid(row=3, column=2, pady=5)
 
         gBButt = tk.Button(
-            self, text="Both Graphs", width=7, height=2, command=lambda: gMode("B")
+            self,
+            text="Both Graphs",
+            width=7,
+            height=2,
+            command=lambda: controller.dispFrame("graphBP"),
         )  # signout button calls signOut
         gBButt.grid(row=4, column=2, pady=5)
         # back button
