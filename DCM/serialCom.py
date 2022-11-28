@@ -95,14 +95,13 @@ def isDifferent(user):
             unpackedDataIn = []
             unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0]) #lrl
             unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0]) #url
-            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #ampl            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#vent_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#pw
-            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#atr_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#vent_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#atr_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[36:40])[0])#vent_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[40:44])[0])#mode
+            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #ampl
+            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#pw
+            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#atr_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#vent_sen
+            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#atr_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#mode
             currentParams = getParams(user, "checkConn")
             if (currentParams == None or dataIn == None):
                 return True
