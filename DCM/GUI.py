@@ -7,6 +7,7 @@ from storeAttributes import *
 from serialCom import *
 from Egram import *
 
+
 BGCOLOR = "#800000"  # background color of gui-maroon
 # Runs gui and controls program
 
@@ -33,9 +34,6 @@ class gui(tk.Tk):  # tk.TK is root
             deleteP,
             afterLogin,
             modeP,
-            graphAP,
-            graphBP,
-            graphVP,
         ):
             pageName = page.__name__  # magic  method to get object name -pythons cool
             # parent as container for frame, with self as controller to use function in gui
@@ -95,28 +93,6 @@ class welcomeP(tk.Frame):  # Frame is parent
         loginButt.pack(pady=5)
         signButt.pack(pady=5)
         deleteButt.pack(pady=5)
-
-
-class graphAP(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg=BGCOLOR)
-        self.controller = controller
-        graph("A")
-
-
-class graphVP(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg=BGCOLOR)
-        self.controller = controller
-        contGraph = True
-        graph("V")
-
-
-class graphBP(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg=BGCOLOR)
-        self.controller = controller
-        graph("B")
 
 
 class modeP(tk.Frame):
@@ -1158,7 +1134,8 @@ class afterLogin(tk.Frame):  # page after login success
         refreshButt.grid(row=2, column=3)
 
         def signOut():  # signs out user by going to welcome page and removing username history from shared variable
-            username.config(textvariable=controller.sharedUser["username"].set(""))
+            username.config(
+                textvariable=controller.sharedUser["username"].set(""))
             controller.dispFrame("welcomeP")
 
         user = tk.Label(
@@ -1183,11 +1160,11 @@ class afterLogin(tk.Frame):  # page after login success
 
         def gMode(gType):
             if gType == "A":
-                controller.dispFrame("grahpAP")
+                graphFunc("A")
             if gType == "V":
-                controller.dispFrame("grahVP")
+                graphFunc("V")
             if gType == "B":
-                controller.dispFrame("grahBP")
+                graphFunc("B")
 
         gAButt = tk.Button(
             self, text="Atrium Graph", width=7, height=2, command=lambda: gMode("A")
