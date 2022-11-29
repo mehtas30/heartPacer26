@@ -100,40 +100,43 @@ def isDifferent(user):  # compares backend data with system data to see if it is
             dataIn = pacemaker.read(72)
             unpackedDataIn = []
 
-            unpackedDataIn.append(struct.unpack("d", dataIn[0:8])[0]) #lrl
-            unpackedDataIn.append(struct.unpack("d", dataIn[8:16])[0]) #url
-            unpackedDataIn.append(struct.unpack("d", dataIn[16:24])[0]) #ampl
-            unpackedDataIn.append(struct.unpack("d", dataIn[24:32])[0])#pw
-            unpackedDataIn.append(struct.unpack("d", dataIn[32:40])[0])#atr_sen
-            unpackedDataIn.append(struct.unpack("d", dataIn[40:48])[0])#vent_sen
-            unpackedDataIn.append(struct.unpack("d", dataIn[48:56])[0])#atr_ref
-            unpackedDataIn.append(struct.unpack("d", dataIn[56:64])[0])#vent_ref
-            unpackedDataIn.append(struct.unpack("d", dataIn[64:72])[0])#mode
+            unpackedDataIn.append(struct.unpack("d", dataIn[0:8])[0])  # lrl
+            unpackedDataIn.append(struct.unpack("d", dataIn[8:16])[0])  # url
+            unpackedDataIn.append(struct.unpack("d", dataIn[16:24])[0])  # ampl
+            unpackedDataIn.append(struct.unpack("d", dataIn[24:32])[0])  # pw
+            unpackedDataIn.append(struct.unpack(
+                "d", dataIn[32:40])[0])  # atr_sen
+            unpackedDataIn.append(struct.unpack(
+                "d", dataIn[40:48])[0])  # vent_sen
+            unpackedDataIn.append(struct.unpack(
+                "d", dataIn[48:56])[0])  # atr_ref
+            unpackedDataIn.append(struct.unpack(
+                "d", dataIn[56:64])[0])  # vent_ref
+            unpackedDataIn.append(struct.unpack("d", dataIn[64:72])[0])  # mode
             currentParams = getParams(user, "checkConn")
-            #print(unpackedDataIn)
-
-if (currentParams == None or dataIn == None):
-                return True
-            if (unpackedDataIn[2] == currentParams[2] or unpackedDataIn[2] == currentParams[6]):  # amp
-                pass
-            else:
-                return True
-            if (unpackedDataIn[3] == currentParams[3] or unpackedDataIn[3] == currentParams[7]):  # pw
-                pass
-            else:
-                return True
-            if (unpackedDataIn[6] != currentParams[5]):  # arp
-                return True
-            if (unpackedDataIn[7] != currentParams[7]):  # vrp
-                return True
-            if (unpackedDataIn[0] != currentParams[0]):  # lrl
-                return True
-            if (unpackedDataIn[1] != currentParams[1]):  # URL
-                return True
-            if (dataIn[4] != currentParams[4]):  # Asens
-                return True
-            if (unpackedDataIn[5] != currentParams[8]):  # Vsens
-                return True
+            # print(unpackedDataIn)
+        if (currentParams == None or dataIn == None):
+            return True
+        if (unpackedDataIn[2] == currentParams[2] or unpackedDataIn[2] == currentParams[6]):  # amp
+            pass
+        else:
+            return True
+        if (unpackedDataIn[3] == currentParams[3] or unpackedDataIn[3] == currentParams[7]):  # pw
+            pass
+        else:
+            return True
+        if (unpackedDataIn[6] != currentParams[5]):  # arp
+            return True
+        if (unpackedDataIn[7] != currentParams[7]):  # vrp
+            return True
+        if (unpackedDataIn[0] != currentParams[0]):  # lrl
+            return True
+        if (unpackedDataIn[1] != currentParams[1]):  # URL
+            return True
+        if (dataIn[4] != currentParams[4]):  # Asens
+            return True
+        if (unpackedDataIn[5] != currentParams[8]):  # Vsens
+            return True
         return False
 #         data = pacemaker.read(9)
 #         red_rev = data[0]
@@ -192,7 +195,7 @@ def sendData(paramNative):  # sends data in order to pacemaker-recives from gui
             Signal_set = Start + Fn_set + Aampp+apwp + \
                 arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "VVI"):
-            if(endian_check()==True):
+            if (endian_check() == True):
                 Vampp = struct.pack("<d", paramNative[5])
                 vpwp = struct.pack("<d", paramNative[6])
                 arpp = struct.pack("<d", paramNative[4])
@@ -227,7 +230,7 @@ def sendData(paramNative):  # sends data in order to pacemaker-recives from gui
             Signal_set = Start + Fn_set + Aampp+apwp + \
                 arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
         elif (paramNative[11] == "VOO"):
-            if(endian_check()==True):
+            if (endian_check() == True):
                 print('little endian')
                 Vampp = struct.pack("<d", paramNative[5])
                 vpwp = struct.pack("<d", paramNative[6])
@@ -257,7 +260,7 @@ def sendData(paramNative):  # sends data in order to pacemaker-recives from gui
     else:
         print("not connected")
         # print(paramNative)
-    #print(Signal_set)
+    # print(Signal_set)
 
 
 def readData():
