@@ -2,14 +2,131 @@ import enum
 import tkinter as tk
 from tkinter import messagebox
 from tkinter.tix import COLUMN
+from tkinter import *
 from options import *
 from storeAttributes import *
 from serialCom import *
-from Egram import *
-
+from PIL import Image, ImageTk
+import datetime
+import matplotlib.pyplot as plt
+from matplotlib import animation
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
+IMAGE = "LOGO.png"
+#from matplot2 import *
 
 BGCOLOR = "#800000"  # background color of gui-maroon
 # Runs gui and controls program
+fig = plt.Figure()  # creates figure
+ax = fig.add_subplot(311)  # creates 2 subplots for V and A
+axA = fig.add_subplot(312)
+ax.set_ylabel('Ventrical Egram')
+axA.set_ylabel('Atrium Egram')
+xArray = [[0], [0]]  # time array
+# lnA, = axB.plot([], [], lw=2)
+# lnV, = axB.plot([], [], lw=2)
+# lines = []
+# colors = ["red", "blue"]
+# for x in range(2):
+#     lineConf = axB.plot([], [], lw=2, color=colors[x])
+#     lines.append(lineConf)
+# replace with serial comm readData()
+# example data for easy testing
+exampleV = [1, 2, 3, 2, 1, 2, 3, 2, 2, 3, 2, 1]
+exampleA = [3, 2, 2, 3, 4, 3, 3, 2, 2, 3, 2, 1]
+counterg = [0, 0]  # y counter
+gData = [[0], [0]]
+scan = False
+# animation function for v
+
+
+def newStuffV(i):
+    # when serial comm works get data here instead of globally
+    global exampleV  # access to data
+    global counterg
+    global gData
+    global xArray
+    if (scan == True):
+        gData[0].append(exampleV[counterg[0]])  # adds example data
+        counterg[0] = counterg[0] + 1  # counter
+        if counterg[0] == 10:
+            counterg[0] = 0  # loops back to first example data
+            # data.pop()
+        # adds time if less then 10 other wise pops y data (not needed in negative time)
+        if len(xArray[0]) < 10:
+            xArray[0].append(xArray[0][len(xArray[0]) - 1] + 1)
+        else:
+            gData[0].pop(0)
+    else:
+        xArray[0] = [0]
+        gData[0] = [0]
+    ax.clear()
+    ax.set_ylabel('Ventrical Egram')  # plots data
+    ax.plot(xArray[0], gData[0])
+
+
+def newStuffA(i):
+    global exampleA
+    global counterg
+    global gData
+    global xArray
+    if (scan == True):
+        gData[1].append(exampleA[counterg[1]])
+        counterg[1] = counterg[1] + 1
+        if counterg[1] == 10:
+            counterg[1] = 0
+            # data.pop()
+        if len(xArray[1]) < 10:
+            xArray[1].append(xArray[1][len(xArray[1]) - 1] + 1)
+        else:
+            gData[1].pop(0)
+    else:
+        xArray[1] = [0]
+        gData[1] = [0]
+    axA.clear()
+    axA.set_ylabel('Atrium Egram')
+    axA.plot(xArray[1], gData[1])
+
+
+# def newStuffB(i):
+    # global exampleA
+    # global counterg
+    # global gData
+    # global xArray
+    # global exampleV
+    # global lnA
+    # global lnV
+    # if (scan == True):
+    #     gData[1].append(exampleA[counterg[1]])
+    #     counterg[1] = counterg[1] + 1
+    #     if counterg[1] == 10:
+    #         counterg[1] = 0
+    #         # data.pop()
+    #     if len(xArray[1]) < 10:
+    #         xArray[1].append(xArray[1][len(xArray[1]) - 1] + 1)
+    #     else:
+    #         gData[1].pop(0)
+    # else:
+    #     xArray[1] = [0]
+    #     gData[1] = [0]
+    # if (scan == True):
+    #     gData[0].append(exampleV[counterg[0]])
+    #     counterg[0] = counterg[0] + 1
+    #     if counterg[0] == 10:
+    #         counterg[0] = 0
+    #         # data.pop()
+    #     if len(xArray[0]) < 10:
+    #         xArray[0].append(xArray[0][len(xArray[0]) - 1] + 1)
+    #     else:
+    #         gData[0].pop(0)
+    # else:
+    #     xArray[0] = [0]
+    #     gData[0] = [0]
+
+    # axB.clear()
+    # axB.set_ylabel('Both Egrams')
+    # lnA.set_data(xArray[1], gData[1])
+    # lnV.set_data(xArray[0], gData[0])
+    # return lines
 
 
 class gui(tk.Tk):  # tk.TK is root
@@ -19,7 +136,8 @@ class gui(tk.Tk):  # tk.TK is root
         # init for tkinter functionality (superclass)
         tk.Tk.__init__(self, *args, **kwargs)
         # shared parameters that can be used throughout all frames
-        self.sharedUser = {"username": tk.StringVar(), "mode": tk.StringVar()}
+        self.sharedUser = {"username": tk.StringVar(
+        ), "mode": tk.StringVar()}
         container = tk.Frame()  # container for frames
         # pack means place, expandable window
         container.pack(side="top", fill="both", expand=True)
@@ -34,6 +152,8 @@ class gui(tk.Tk):  # tk.TK is root
             deleteP,
             afterLogin,
             modeP,
+            eGramP,
+            AboutP,
         ):
             pageName = page.__name__  # magic  method to get object name -pythons cool
             # parent as container for frame, with self as controller to use function in gui
@@ -45,6 +165,9 @@ class gui(tk.Tk):  # tk.TK is root
 
     def dispFrame(self, pageName):  # display frame based on name- creates instances
         page = self.pageInfo[pageName]
+        # if pageName == "eGramP":
+        #     page.destroy()
+        #     print("entered destroy")
         page.tkraise()  # raises frame over the other frames to be visible
 
 
@@ -93,6 +216,77 @@ class welcomeP(tk.Frame):  # Frame is parent
         loginButt.pack(pady=5)
         signButt.pack(pady=5)
         deleteButt.pack(pady=5)
+
+
+class eGramP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+
+        def backPressed():
+            global scan
+            scan = False
+            self.controller.dispFrame("afterLogin")
+        title = tk.Label(
+            self,
+            text="Egram (V vs T (20ms))",
+            fg="#F2BA49",
+            bg=BGCOLOR,
+            justify="center",
+            font="default, 25",
+        )
+        title.grid(row=0, column=1)
+        backButt = tk.Button(  # back button and title
+            self, text="Back", width=5, height=2, command=lambda: backPressed()
+        )
+        backButt.grid(row=0, column=2, pady=5)  # back button calls backPressed
+        # draws on canvas attached to tkinter
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=1, column=1)
+
+
+class AboutP(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=BGCOLOR)
+        self.controller = controller
+
+        photo = ImageTk.PhotoImage(Image.open("LOGO.png"))
+        # adds image to label- suprisingly painful never using tkinter again PyQt>>
+        imageLabel = tk.Label(self, image=photo)
+        imageLabel.grid(row=1, column=1, columnspan=1, rowspan=1)
+        imageLabel.image = photo
+        # imageLabel.grid(row=1, column=1)
+        backButt = tk.Button(
+            self, text="Back", width=5, height=2, command=lambda: self.controller.dispFrame("afterLogin")
+        )
+        backButt.grid(row=0, column=0, pady=5)  # back button calls backPressed
+        com = tk.StringVar(
+            self,  getCom()
+        )  # connection stringVar that gets value from initial value of connected from serialCom.py
+        showID = tk.Label(
+            self,
+            textvariable=com,  # calls serial com method to get port as device id
+            fg="Blue",
+            bg=BGCOLOR,
+            justify="center",
+            font="default, 25",
+        )
+        showID.grid(row=0, column=1)
+
+        def getTime():
+            x = datetime.datetime.now()
+            return x.strftime("%d/%m/%Y %H:%M")
+        timeSV = tk.StringVar(self, getTime())
+        showTime = tk.Label(
+            self,  # current time (not updating)
+            textvariable=timeSV,
+            fg="Blue",
+            bg=BGCOLOR,
+            justify="center",
+            font="default, 25",
+        )
+        showTime.grid(row=0, column=2)
 
 
 class modeP(tk.Frame):
@@ -1158,28 +1352,19 @@ class afterLogin(tk.Frame):  # page after login success
         username.grid(row=1, column=2, padx=150)
         # graph buttons and method
 
-        def gMode(gType):
-            if gType == "A":
-                graphFunc("A")
-            if gType == "V":
-                graphFunc("V")
-            if gType == "B":
-                graphFunc("B")
-
-        gAButt = tk.Button(
-            self, text="Atrium Graph", width=7, height=2, command=lambda: gMode("A")
+        def goGraph():
+            global scan
+            scan = True
+            controller.dispFrame("eGramP")
+        grAButt = tk.Button(
+            self, text="ECG", width=8, height=2, command=lambda: goGraph()
         )  # signout button calls signOut
-        gAButt.grid(row=2, column=2, pady=5)
-
-        gVButt = tk.Button(
-            self, text="Ventrical Graph", width=7, height=2, command=lambda: gMode("V")
+        grAButt.grid(row=2, column=2, pady=5)
+        # about page
+        gAboutButt = tk.Button(
+            self, text="About", width=8, height=2, command=lambda: controller.dispFrame("AboutP")
         )  # signout button calls signOut
-        gVButt.grid(row=3, column=2, pady=5)
-
-        gBButt = tk.Button(
-            self, text="Both Graphs", width=7, height=2, command=lambda: gMode("B")
-        )  # signout button calls signOut
-        gBButt.grid(row=4, column=2, pady=5)
+        gAboutButt.grid(row=3, column=3, pady=5)
         # back button
         soButt = tk.Button(
             self, text="Sign Out", width=5, height=2, command=lambda: signOut()
@@ -1501,4 +1686,8 @@ class deleteP(tk.Frame):
 
 if __name__ == "__main__":
     app = gui()  # gui instance
+    ani = animation.FuncAnimation(fig, newStuffV, interval=200)
+    aniA = animation.FuncAnimation(
+        fig, newStuffA, interval=200)  # updates graphs
+    # aniB = animation.FuncAnimation(fig, newStuffB, interval=200)
     app.mainloop()  # mainloop runs program

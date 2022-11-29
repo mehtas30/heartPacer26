@@ -49,42 +49,48 @@ from storeAttributes import getParams
 #     print("switch_time = ", switch_rev)
 ###
 
+
 def endian_check():
     if sys.byteorder == "little":
         return True
     else:
         return False
 
-def isConnected():
+# gets endian
+
+
+def isConnected():  # checks if connected and returns port
     if sys.platform.startswith('win'):
         try:
-            frdm_port = "COM4"
+            frdm_port = "COM4"  # tries for windows  need to change to ur system
             with serial.Serial(frdm_port, 115200) as pacemaker:
                 connected = True
                 print("connected")
-        except serial.serialutil.SerialException:
+        except serial.serialutil.SerialException:  # if error thrown nothing connected
             connected = False  # initial value of connected- will change with serial com
             print("not connected")
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+
         try:
-            frdm_port = "/dev/cu.usbmodem0000001234561"
+            frdm_port = "/dev/cu.usbmodem0000001234561"  # mac port
             with serial.Serial(frdm_port, 115200) as pacemaker:
                 connected = True
+                print(connected)
                 print("connected")
         except serial.serialutil.SerialException:
-            connected = False  # initial value of connected- will change with serial com
+            connected = False
             print("not connected")
     return connected, frdm_port
 
 
-def isDifferent(user):
-    comInfo = isConnected()
+def isDifferent(user):  # compares backend data with system data to see if it is different
+    comInfo = isConnected()  # works only if connected
     findConnection = comInfo[0]
     port = comInfo[1]
     if (findConnection == True):
         print("checking different devices")
         Start = b'\x16'
-        SYNC = b'\x22'
+        SYNC = b'\x22'  # echo bit
         Signal_echo = Start + SYNC
         for i in range(15):
             Signal_echo = Signal_echo+struct.pack("B", 0)
@@ -93,17 +99,21 @@ def isDifferent(user):
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(71)
             unpackedDataIn = []
-            unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0]) #lrl
-            unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0]) #url
-            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0]) #ampl
-            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])#pw
-            unpackedDataIn.append(struct.unpack("f", dataIn[16:20])[0])#atr_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[20:24])[0])#vent_sen
-            unpackedDataIn.append(struct.unpack("f", dataIn[24:28])[0])#atr_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[28:32])[0])#vent_ref
-            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])#mode
-            currentParams = getParams(user, "checkConn")
-            #print(unpackedDataIn)
+            unpackedDataIn.append(struct.unpack("f", dataIn[0:4])[0])  # lrl
+            unpackedDataIn.append(struct.unpack("f", dataIn[4:8])[0])  # url
+            unpackedDataIn.append(struct.unpack("f", dataIn[8:12])[0])  # ampl
+            unpackedDataIn.append(struct.unpack("f", dataIn[12:16])[0])  # pw
+            unpackedDataIn.append(struct.unpack(
+                "f", dataIn[16:20])[0])  # atr_sen
+            unpackedDataIn.append(struct.unpack(
+                "f", dataIn[20:24])[0])  # vent_sen
+            unpackedDataIn.append(struct.unpack(
+                "f", dataIn[24:28])[0])  # atr_ref
+            unpackedDataIn.append(struct.unpack(
+                "f", dataIn[28:32])[0])  # vent_ref
+            unpackedDataIn.append(struct.unpack("f", dataIn[32:36])[0])  # mode
+            currentParams = getParams(user, "checkConn")  # backend data
+            # print(unpackedDataIn)
             if (currentParams == None or dataIn == None):
                 return True
             if (unpackedDataIn[2] == currentParams[2] or unpackedDataIn[2] == currentParams[6]):  # amp
@@ -137,7 +147,7 @@ def isDifferent(user):
         return False
 
 
-def sendData(paramNative):
+def sendData(paramNative):  # sends data in order to pacemaker-recives from gui
     comInfo = isConnected()
     findConnection = comInfo[0]
     port = comInfo[1]
@@ -148,26 +158,28 @@ def sendData(paramNative):
         SYNC = b'\x22'
         Fn_set = b'\x55'
         print(paramNative)
+        # depends on mode because it sends different data ( vamp for v modes etc and the mode itslef (numerical representation))
         if (paramNative[11] == "AOO"):
-            if(endian_check()==True):
+            if (endian_check() == True):  # endian based on checker
                 print('little endian')
                 Aampp = struct.pack("<d", float(paramNative[1]))
                 apwp = struct.pack("<d", float(paramNative[2]))
                 arpp = struct.pack("<d", float(paramNative[4]))
                 vrpp = struct.pack("<d", float(paramNative[4]))
                 LRLp = struct.pack("<d", float(paramNative[0]))
+                # packs data into what pacemaker accepts
                 URLp = struct.pack("<d", float(paramNative[12]))
                 Asensp = struct.pack("<d", float(paramNative[3]))
                 Vsensp = struct.pack("<d", float(paramNative[3]))
                 modep = struct.pack("d", 1)
-##                print(Aampp)
-##                print(apwp)
-##                print(arpp)
-##                print(vrpp)
-##                print(LRLp)
-##                print(URLp)
-##                print(Asensp)
-##                print(Vsensp)
+# print(Aampp)
+# print(apwp)
+# print(arpp)
+# print(vrpp)
+# print(LRLp)
+# print(URLp)
+# print(Asensp)
+# print(Vsensp)
                 print(modep)
             else:
                 print('big endian')
@@ -219,15 +231,16 @@ def sendData(paramNative):
             Signal_set = Start + Fn_set + Vampp+vpwp + \
                 arpp+vrpp+LRLp+URLp+Asensp+Vsensp+modep
 #     switch_time = struct.pack("H", 500)  # Integer 2 byte
-        with serial.Serial(port, 115200) as pacemaker:
+        with serial.Serial(port, 115200) as pacemaker:  # sends to pacemaker
             pacemaker.write(Signal_set)
     else:
         print("not connected")
         # print(paramNative)
     print(Signal_set)
 
+
 def readData():
-    comInfo = isConnected()
+    comInfo = isConnected()  # checks if connected
     findConnection = comInfo[0]
     port = comInfo[1]
     if (findConnection):
@@ -235,15 +248,17 @@ def readData():
         Start = b'\x16'
         SYNC = b'\x22'
         Signal_echo = Start + SYNC
+        # sends 0 because it is garbage data and not used just need to send stream
         for i in range(15):
             Signal_echo = Signal_echo+struct.pack("B", 0)
-        # comaparing pacemaker data with dcm data
         with serial.Serial(port, 115200) as pacemaker:
             pacemaker.write(Signal_echo)
             dataIn = pacemaker.read(15)
-            return dataIn
+            return dataIn  # reads data in and returns it to caller- this will be at the top
     else:
         return None
+
+# test to see if sent and recieved data is the same
 
 
 def testSet():
@@ -292,6 +307,13 @@ def setRx():
         dataIn = pacemaker.read(15)
         print(dataIn)
 
+
+def getCom():
+    com = isConnected()
+    if (com[0] == True):
+        return str(com[1])
+    else:
+        return "Not Connected"
 
 # testSet()
 
